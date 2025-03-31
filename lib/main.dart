@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 
 void main() {
   runApp(const MyApp());
@@ -19,8 +21,27 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class UserHomePage extends StatelessWidget {
+class UserHomePage extends StatefulWidget {
   const UserHomePage({super.key});
+
+  @override
+  State<UserHomePage> createState() => _UserHomePageState();
+}
+
+class _UserHomePageState extends State<UserHomePage> {
+  final ImagePicker _picker = ImagePicker();
+
+  // 画像を撮影するメソッド
+  Future<void> _takePhoto() async {
+    final XFile? photo = await _picker.pickImage(source: ImageSource.camera);
+
+    if (photo != null) {
+      // 撮影成功した場合の処理
+      print('写真が撮影されました: ${photo.path}');
+      // ここで画像分析などの処理を追加できます
+    }
+    // 撮影完了後、何もしなければ自動的にホーム画面に戻ります
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +52,7 @@ class UserHomePage extends StatelessWidget {
               'コスメ成分分析',
               style: TextStyle(
                   color: Colors.white,
-                  fontSize:24,
+                  fontSize: 24,
                   fontFamily: 'Roboto',
                   letterSpacing: 2.0
               )
@@ -54,7 +75,7 @@ class UserHomePage extends StatelessWidget {
               ),
               child: const Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: [  // ここの const を削除
+                children: [
                   Text(
                     '使い方',
                     style: TextStyle(
@@ -72,11 +93,13 @@ class UserHomePage extends StatelessWidget {
             const SizedBox(height: 30),
 
             // 撮影するボタン
-            ElevatedButton(
-              onPressed: () {
-                print('撮影するボタンが押されました');
-              },
-              child: const Text('撮影する'),
+            ElevatedButton.icon(
+              onPressed: _takePhoto,
+              icon: const Icon(Icons.camera_alt),
+              label: const Text('撮影する'),
+              style: ElevatedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+              ),
             ),
           ],
         ),

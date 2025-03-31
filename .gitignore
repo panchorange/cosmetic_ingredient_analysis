@@ -96,3 +96,6 @@ nosetests.xml
 coverage.xml
 *.cover
 .hypothesis/
+
+# 見せたらだめ apiキー
+android/app/google-services.json
