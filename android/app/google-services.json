@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1037062375017",
+    "project_id": "cosmetic-ingredient-analysis",
+    "storage_bucket": "cosmetic-ingredient-analysis.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1037062375017:android:939821fec2a480c4e284f8",
+        "android_client_info": {
+          "package_name": "com.higapan.cosmeanalyzer"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB0BlFfhYCdWI0JrD-R_4DuCGDwuZ9y6qs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
