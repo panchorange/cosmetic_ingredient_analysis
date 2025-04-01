@@ -1,13 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+// import 'firebase_options.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
-void main() {
-  runApp(const MyApp());
+void main() async {
+  // WidgetsFlutterBinding.ensureInitialized();
+  // await Firebase.initializeApp(
+  //   options: DefaultFirebaseOptions.currentPlatform,
+  // );
+  runApp(const CosmeAnalyzer());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class CosmeAnalyzer extends StatelessWidget {
+  const CosmeAnalyzer({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -30,6 +37,8 @@ class UserHomePage extends StatefulWidget {
 
 class _UserHomePageState extends State<UserHomePage> {
   final ImagePicker _picker = ImagePicker();
+  bool _isLoading = false;
+  String _resultText = '';
 
   // 画像を撮影するメソッド
   Future<void> _takePhoto() async {
@@ -38,10 +47,44 @@ class _UserHomePageState extends State<UserHomePage> {
     if (photo != null) {
       // 撮影成功した場合の処理
       print('写真が撮影されました: ${photo.path}');
-      // ここで画像分析などの処理を追加できます
+      setState(() {
+        _isLoading = true;
+        _resultText = '写真を解析中...';
+      });
+      try {
+        // 画像をFirebase Storageにアップロード
+        // String imageUrl = await _uploadImageToFirebase(photo);
+        print("画像をアップロードする処理");
+      } catch (e) {
+        setState((){
+          _resultText = '解析に失敗しました: $e';
+        });
+      } finally {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+
     }
-    // 撮影完了後、何もしなければ自動的にホーム画面に戻ります
   }
+    // Firebase Storageにアップロードするメソッド
+  // Future<String> _uploadImageToFirebase(XFile imageFile) async {
+  //   // ユニークなファイル名を生成
+  //   String fileName = 'cosme_${DateTime.now().millisecondsSinceEpoch}.jpg';
+    
+  //   // Storageの参照を作成
+  //   final storageRef = FirebaseStorage.instance.ref();
+  //   final cosmesRef = storageRef.child('cosmes/$fileName');
+    
+  //   // ファイルをアップロード
+  //   File file = File(imageFile.path);
+  //   await cosmesRef.putFile(file);
+    
+  //   // アップロードしたファイルのURLを取得
+  //   final downloadUrl = await cosmesRef.getDownloadURL();
+  //   return downloadUrl;
+  // }
+
 
   @override
   Widget build(BuildContext context) {
