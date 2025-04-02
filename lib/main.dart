@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 import 'viewmodels/picture_viewmodel.dart';
 import 'views/user_home.dart';
+import 'views/setting_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,9 +21,14 @@ class CosmeAnalyzer extends StatelessWidget {
       child: MaterialApp(
         title: 'コスメ成分分析',
         theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue), // アプリ全体のテーマ設定
         ),
-        home: const UserHomePage(),
+        initialRoute: '/',
+        routes: { // ルーティング設定
+          '/': (context) => const UserHomePage(),
+          '/settings': (context) => const SettingsPage(),
+        },
+        
       ),
     );
   }

@@ -34,7 +34,7 @@ class UserHomePage extends StatelessWidget {
                     margin: const EdgeInsets.symmetric(horizontal: 20.0),
                     padding: const EdgeInsets.all(16.0),
                     decoration: BoxDecoration(
-                      color: Colors.blue.shade100,
+                      color: Colors.blue.shade200,
                       borderRadius: BorderRadius.circular(10.0),
                     ),
                     child: const Column(
@@ -92,7 +92,7 @@ class UserHomePage extends StatelessWidget {
                     children: [
                       ElevatedButton.icon(
                         onPressed: viewModel.takePhoto,
-                        icon: const Icon(Icons.camera_alt),
+                        icon: const Icon(Icons.camera_alt_outlined),
                         label: const Text('撮影する'),
                         style: ElevatedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
@@ -101,7 +101,7 @@ class UserHomePage extends StatelessWidget {
                       const SizedBox(width: 16),
                       ElevatedButton.icon(
                         onPressed: viewModel.pickFromGallery,
-                        icon: const Icon(Icons.photo_library),
+                        icon: const Icon(Icons.photo_library_outlined),
                         label: const Text('ギャラリーから選択'),
                         style: ElevatedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
@@ -148,10 +148,29 @@ class UserHomePage extends StatelessWidget {
                     ),
 
                   const SizedBox(height: 20),
+
                 ],
               ),
             ),
           );
+        },
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'ホーム',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.settings),
+            label: '設定',
+          )
+        ],
+        currentIndex: 0,
+        onTap: (index) {
+          if (index == 1) {
+            Navigator.pushNamed(context, '/settings');
+          }
         },
       ),
     );
