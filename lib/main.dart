@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 import 'viewmodels/picture_viewmodel.dart';
+import 'viewmodels/skin_profile_viewmodel.dart';
 import 'views/user_home.dart';
-import 'views/setting_page.dart';
+import 'views/skin_profile_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,8 +17,11 @@ class CosmeAnalyzer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => PictureViewModel(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => PictureViewModel()),
+        ChangeNotifierProvider(create: (context) => SkinProfileViewModel()),
+      ],
       child: MaterialApp(
         title: 'コスメ成分分析',
         theme: ThemeData(
@@ -26,7 +30,7 @@ class CosmeAnalyzer extends StatelessWidget {
         initialRoute: '/',
         routes: { // ルーティング設定
           '/': (context) => const UserHomePage(),
-          '/settings': (context) => const SettingsPage(),
+          '/settings': (context) => const SkinProfilePage(),
         },
         
       ),

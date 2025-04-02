@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../viewmodels/skin_profile_viewmodel.dart';
 
-class SettingsPage extends StatefulWidget {
-    const SettingsPage({super.key});
+class SkinProfilePage extends StatefulWidget {
+    const SkinProfilePage({super.key});
 
     @override
-    State<SettingsPage> createState() => _SettingsPageState();
+    State<SkinProfilePage> createState() => _SkinProfilePageState();
 }
 
-class _SettingsPageState extends State<SettingsPage> {
+class _SkinProfilePageState extends State<SkinProfilePage> {
     // 選択状態を管理する変数
     String selectedSkinType = '乾燥';
     final Set<String> selectedSkinProblems = {'ニキビ', 'シミ'};
@@ -147,7 +149,26 @@ class _SettingsPageState extends State<SettingsPage> {
                                     padding: const EdgeInsets.symmetric(vertical: 16),
                                 ),
                                 onPressed: () {
-                                    // 保存処理は後で実装
+                                    // ViewModelに保存
+                                    final viewModel = Provider.of<SkinProfileViewModel>(context, listen: false);
+                                    viewModel.saveProfile(
+                                        skinType: selectedSkinType,
+                                        skinProblems: selectedSkinProblems,
+                                        avoidIngredients: selectedAvoidIngredients,
+                                        desiredEffects: selectedEffects,
+                                        note: noteController.text.isEmpty ? null : noteController.text,
+                                    );
+                                    
+                                    // 保存された内容を確認
+                                    print('=== 保存されたプロフィール ===');
+                                    print('肌タイプ: $selectedSkinType');
+                                    print('主な肌悩み: $selectedSkinProblems');
+                                    print('避けたい成分: $selectedAvoidIngredients');
+                                    print('求める効果: $selectedEffects');
+                                    print('特記事項: ${noteController.text}');
+                                    print('==========================');
+                                    
+                                    // ホーム画面に戻る
                                     Navigator.pop(context);
                                 },
                                 child: const Text(
@@ -164,10 +185,4 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
         );
     }
-
-    @override
-    void dispose() {
-        noteController.dispose();
-        super.dispose();
-    }
-}
+} 

@@ -162,8 +162,8 @@ class UserHomePage extends StatelessWidget {
             label: 'ホーム',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: '設定',
+            icon: Icon(Icons.person),
+            label: 'プロフィール',
           )
         ],
         currentIndex: 0,
