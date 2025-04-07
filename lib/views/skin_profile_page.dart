@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../viewmodels/skin_profile_viewmodel.dart';
+import '../viewmodels/picture_viewmodel.dart';
+import 'dart:io';
 
 class SkinProfilePage extends StatefulWidget {
     const SkinProfilePage({super.key});
@@ -16,6 +18,7 @@ class _SkinProfilePageState extends State<SkinProfilePage> {
     final Set<String> selectedAvoidIngredients = {'香料', 'なし'};
     final Set<String> selectedEffects = {'保湿', 'エイジングケア'};
     final TextEditingController noteController = TextEditingController();
+    File? _selectedImage;
 
     @override
     Widget build(BuildContext context) {
@@ -38,6 +41,74 @@ class _SkinProfilePageState extends State<SkinProfilePage> {
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                        // 画像選択部分を追加
+                        const Text('プロフィール画像', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                        const SizedBox(height: 8),
+                        Center(
+                            child: Column(
+                                children: [
+                                    if (_selectedImage != null)
+                                        Container(
+                                            width: 150,
+                                            height: 150,
+                                            decoration: BoxDecoration(
+                                                border: Border.all(color: Colors.grey),
+                                                borderRadius: BorderRadius.circular(75),
+                                            ),
+                                            child: ClipRRect(
+                                                borderRadius: BorderRadius.circular(75),
+                                                child: Image.file(
+                                                    _selectedImage!,
+                                                    fit: BoxFit.cover,
+                                                ),
+                                            ),
+                                        )
+                                    else
+                                        Container(
+                                            width: 150,
+                                            height: 150,
+                                            decoration: BoxDecoration(
+                                                border: Border.all(color: Colors.grey),
+                                                borderRadius: BorderRadius.circular(75),
+                                            ),
+                                            child: const Center(
+                                                child: Icon(Icons.person, size: 50),
+                                            ),
+                                        ),
+                                    const SizedBox(height: 16),
+                                    Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                            ElevatedButton.icon(
+                                                onPressed: () async {
+                                                    final viewModel = Provider.of<PictureViewModel>(context, listen: false);
+                                                    await viewModel.takePhoto();
+                                                    setState(() {
+                                                        _selectedImage = viewModel.selectedImage;
+                                                    });
+                                                },
+                                                icon: const Icon(Icons.camera_alt_outlined),
+                                                label: const Text('撮影する'),
+                                            ),
+                                            const SizedBox(width: 16),
+                                            ElevatedButton.icon(
+                                                onPressed: () async {
+                                                    final viewModel = Provider.of<PictureViewModel>(context, listen: false);
+                                                    await viewModel.pickFromGallery();
+                                                    setState(() {
+                                                        _selectedImage = viewModel.selectedImage;
+                                                    });
+                                                },
+                                                icon: const Icon(Icons.photo_library_outlined),
+                                                label: const Text('ギャラリーから選択'),
+                                            ),
+                                        ],
+                                    ),
+                                ],
+                            ),
+                        ),
+                        const SizedBox(height: 24),
+
                         const Text('肌タイプ', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                         const SizedBox(height: 8),
                         Wrap(

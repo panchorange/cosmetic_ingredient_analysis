@@ -8,7 +8,15 @@ import 'views/skin_profile_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  try {
+    await Firebase.initializeApp();
+    print('Firebase initialized successfully');
+  } catch (e, stackTrace) {
+    print('Failed to initialize Firebase:');
+    print('Error: $e');
+    print('Stack trace: $stackTrace');
+    // Firebaseの初期化に失敗してもアプリは起動する
+  }
   runApp(const CosmeAnalyzer());
 }
 
@@ -25,14 +33,16 @@ class CosmeAnalyzer extends StatelessWidget {
       child: MaterialApp(
         title: 'コスメ成分分析',
         theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue), // アプリ全体のテーマ設定
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         ),
-        initialRoute: '/',
-        routes: { // ルーティング設定
-          '/': (context) => const UserHomePage(),
+        home: Builder(
+          builder: (context) {
+            return const UserHomePage();
+          },
+        ),
+        routes: {
           '/settings': (context) => const SkinProfilePage(),
         },
-        
       ),
     );
   }

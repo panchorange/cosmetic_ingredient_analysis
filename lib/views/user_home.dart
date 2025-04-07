@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:provider/provider.dart';
 import '../viewmodels/picture_viewmodel.dart';
+import '../viewmodels/skin_profile_viewmodel.dart';
 
 class UserHomePage extends StatelessWidget {
   const UserHomePage({super.key});
@@ -22,8 +23,14 @@ class UserHomePage extends StatelessWidget {
         ),
         centerTitle: true
       ),
-      body: Consumer<PictureViewModel>(
-        builder: (context, viewModel, child) {
+      body: Consumer2<PictureViewModel, SkinProfileViewModel>(
+        builder: (context, pictureViewModel, skinProfileViewModel, child) {
+          // プロフィール情報が存在する場合、PictureViewModelに設定
+          if (skinProfileViewModel.profile != null && pictureViewModel.currentProfile == null) {
+            pictureViewModel.setProfile(skinProfileViewModel.profile!);
+            print('プロフィール情報をPictureViewModelに設定しました');
+          }
+
           return SingleChildScrollView(
             child: Center(
               child: Column(
@@ -56,7 +63,7 @@ class UserHomePage extends StatelessWidget {
                   ),
                   const SizedBox(height: 20),
 
-                  if (viewModel.selectedImage != null)
+                  if (pictureViewModel.selectedImage != null)
                     Container(
                       width: 250,
                       height: 250,
@@ -67,7 +74,7 @@ class UserHomePage extends StatelessWidget {
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(8),
                         child: Image.file(
-                          viewModel.selectedImage!,
+                          pictureViewModel.selectedImage!,
                           fit: BoxFit.cover,
                         ),
                       ),
@@ -91,7 +98,7 @@ class UserHomePage extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       ElevatedButton.icon(
-                        onPressed: viewModel.takePhoto,
+                        onPressed: pictureViewModel.takePhoto,
                         icon: const Icon(Icons.camera_alt_outlined),
                         label: const Text('撮影する'),
                         style: ElevatedButton.styleFrom(
@@ -100,7 +107,7 @@ class UserHomePage extends StatelessWidget {
                       ),
                       const SizedBox(width: 16),
                       ElevatedButton.icon(
-                        onPressed: viewModel.pickFromGallery,
+                        onPressed: pictureViewModel.pickFromGallery,
                         icon: const Icon(Icons.photo_library_outlined),
                         label: const Text('ギャラリーから選択'),
                         style: ElevatedButton.styleFrom(
@@ -112,9 +119,9 @@ class UserHomePage extends StatelessWidget {
 
                   const SizedBox(height: 20),
 
-                  if (viewModel.selectedImage != null)
+                  if (pictureViewModel.selectedImage != null)
                     ElevatedButton.icon(
-                      onPressed: viewModel.isLoading ? null : viewModel.uploadAndAnalyze,
+                      onPressed: pictureViewModel.isLoading ? null : pictureViewModel.uploadAndAnalyze,
                       icon: const Icon(Icons.cloud_upload),
                       label: const Text('アップロードして解析'),
                       style: ElevatedButton.styleFrom(
@@ -126,7 +133,7 @@ class UserHomePage extends StatelessWidget {
 
                   const SizedBox(height: 20),
 
-                  if (viewModel.isLoading)
+                  if (pictureViewModel.isLoading)
                     const Column(
                       children: [
                         CircularProgressIndicator(),
@@ -135,7 +142,7 @@ class UserHomePage extends StatelessWidget {
                       ],
                     ),
 
-                  if (viewModel.resultText.isNotEmpty)
+                  if (pictureViewModel.resultText.isNotEmpty)
                     Container(
                       width: double.infinity,
                       margin: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -144,11 +151,10 @@ class UserHomePage extends StatelessWidget {
                         color: Colors.grey.shade200,
                         borderRadius: BorderRadius.circular(10.0),
                       ),
-                      child: Text(viewModel.resultText),
+                      child: Text(pictureViewModel.resultText),
                     ),
 
                   const SizedBox(height: 20),
-
                 ],
               ),
             ),
