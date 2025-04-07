@@ -90,12 +90,12 @@ class PictureViewModel extends ChangeNotifier {
 
       // プロフィール情報をテキスト形式に変換
       String profileText = '''
-肌タイプ: ${_currentProfile!.skinType}
-肌悩み: ${_currentProfile!.skinProblems.join(', ')}
-避けたい成分: ${_currentProfile!.avoidIngredients.join(', ')}
-希望する効果: ${_currentProfile!.desiredEffects.join(', ')}
-特記事項: ${_currentProfile!.note ?? 'なし'}
-''';
+      肌タイプ: ${_currentProfile!.skinType}
+      肌悩み: ${_currentProfile!.skinProblems.join(', ')}
+      避けたい成分: ${_currentProfile!.avoidIngredients.join(', ')}
+      希望する効果: ${_currentProfile!.desiredEffects.join(', ')}
+      特記事項: ${_currentProfile!.note ?? 'なし'}
+      ''';
 
       print('アップロード予定のプロフィールテキスト:\n$profileText');
 
@@ -120,7 +120,9 @@ class PictureViewModel extends ChangeNotifier {
       // 乱数を生成（6桁）
       String randomNum = (100000 + (DateTime.now().microsecondsSinceEpoch % 900000)).toString();
       // 作成日時をフォーマット（YYYYMMDD_HHMMSS）
-      String timestamp = DateTime.now().toString().replaceAll(RegExp(r'[-:.]'), '').substring(0, 15);
+      String timestamp = DateTime.now().toIso8601String()
+                          .replaceAll(RegExp(r'[-:\.TZ]'), '')  // 特殊文字を全て削除
+                          .substring(0, 14);  // 年月日時分秒まで
       // フォルダ名を生成（乱数_作成日時）
       String folderName = '${randomNum}_$timestamp';
       
