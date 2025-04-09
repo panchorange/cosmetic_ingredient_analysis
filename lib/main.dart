@@ -5,6 +5,7 @@ import 'viewmodels/picture_viewmodel.dart';
 import 'viewmodels/skin_profile_viewmodel.dart';
 import 'views/user_home.dart';
 import 'views/skin_profile_page.dart';
+import 'views/analysis_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -42,6 +43,7 @@ class CosmeAnalyzer extends StatelessWidget {
         ),
         routes: {
           '/settings': (context) => const SkinProfilePage(),
+          '/analysis': (context) => const AnalysisPage(),
         },
       ),
     );

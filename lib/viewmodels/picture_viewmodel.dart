@@ -3,6 +3,7 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
 import '../models/skin_profile.dart';
+import 'dart:convert';
 
 class PictureViewModel extends ChangeNotifier {
   final ImagePicker _picker = ImagePicker();
@@ -11,6 +12,7 @@ class PictureViewModel extends ChangeNotifier {
   File? _selectedImage;
   String? _uploadedImageUrl;
   SkinProfile? _currentProfile;
+  Map<String, dynamic>? _analysisResult;
 
   // Getters
   bool get isLoading => _isLoading;
@@ -18,6 +20,7 @@ class PictureViewModel extends ChangeNotifier {
   File? get selectedImage => _selectedImage;
   String? get uploadedImageUrl => _uploadedImageUrl;
   SkinProfile? get currentProfile => _currentProfile;
+  Map<String, dynamic>? get analysisResult => _analysisResult;
 
   // プロフィール情報を設定
   void setProfile(SkinProfile profile) {
@@ -117,20 +120,15 @@ class PictureViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
-      // 乱数を生成（6桁）
       String randomNum = (100000 + (DateTime.now().microsecondsSinceEpoch % 900000)).toString();
-      // 作成日時をフォーマット（YYYYMMDD_HHMMSS）
       String timestamp = DateTime.now().toIso8601String()
-                          .replaceAll(RegExp(r'[-:\.TZ]'), '')  // 特殊文字を全て削除
-                          .substring(0, 14);  // 年月日時分秒まで
-      // フォルダ名を生成（乱数_作成日時）
+                          .replaceAll(RegExp(r'[-:\.TZ]'), '')
+                          .substring(0, 14);
       String folderName = '${randomNum}_$timestamp';
       
       String imageUrl = await _uploadImageToFirebase(_selectedImage!, folderName);
       print('画像のアップロード完了: $imageUrl');
       
-      print('現在のプロフィール情報: ${_currentProfile?.toJson()}');
-      // プロフィール情報があれば、それもアップロード
       if (_currentProfile != null) {
         print('プロフィール情報のアップロードを開始');
         await _uploadProfileToFirebase(folderName);
@@ -141,12 +139,34 @@ class PictureViewModel extends ChangeNotifier {
       }
       
       _uploadedImageUrl = imageUrl;
+
+      // 30秒後に解析結果を取得
+      await Future.delayed(const Duration(seconds: 30));
+      await _fetchAnalysisResult(folderName);
+
     } catch (e) {
       print('エラーが発生: $e');
       _resultText = 'アップロードに失敗しました: $e';
     } finally {
       _isLoading = false;
       notifyListeners();
+    }
+  }
+
+  // 解析結果を取得するメソッド
+  Future<void> _fetchAnalysisResult(String folderName) async {
+    try {
+      final storageRef = FirebaseStorage.instance.ref();
+      final analysisRef = storageRef.child('cosmes').child(folderName).child('analysis_result.json');
+      
+      // ファイルをダウンロード
+      final bytes = await analysisRef.getData();
+      final String analysisResultStr = utf8.decode(bytes!);
+      _analysisResult = json.decode(analysisResultStr);
+      print('解析結果: $analysisResultStr');
+      notifyListeners(); // 解析結果が更新されたことを通知
+    } catch (e) {
+      print('解析結果の取得に失敗: $e');
     }
   }
 } 

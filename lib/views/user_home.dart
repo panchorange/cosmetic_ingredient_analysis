@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:provider/provider.dart';
 import '../viewmodels/picture_viewmodel.dart';
 import '../viewmodels/skin_profile_viewmodel.dart';
+import 'analysis_page.dart';
 
 class UserHomePage extends StatelessWidget {
   const UserHomePage({super.key});
@@ -170,12 +171,18 @@ class UserHomePage extends StatelessWidget {
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
             label: 'プロフィール',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.bar_chart_outlined),
+            label: '分析',
           )
         ],
         currentIndex: 0,
         onTap: (index) {
           if (index == 1) {
             Navigator.pushNamed(context, '/settings');
+          } else if (index == 2) {
+            Navigator.pushNamed(context, '/analysis');
           }
         },
       ),

@@ -99,3 +99,5 @@ coverage.xml
 
 # 見せたらだめ apiキー
 android/app/google-services.json
+
+.vscode/
