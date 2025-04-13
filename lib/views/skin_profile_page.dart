@@ -23,6 +23,34 @@ class _SkinProfilePageState extends State<SkinProfilePage> {
     File? _selectedImage;
 
     @override
+    void initState() {
+        super.initState();
+        _loadSavedProfile();
+    }
+
+    Future<void> _loadSavedProfile() async {
+        final viewModel = Provider.of<SkinProfileViewModel>(context, listen: false);
+        await viewModel.loadProfile();
+        
+        if (viewModel.profile != null) {
+            setState(() {
+                selectedBirthDate = viewModel.profile!.birthDate;
+                selectedGender = viewModel.profile!.gender;
+                selectedSkinType = viewModel.profile!.skinType;
+                selectedSkinProblems.clear();
+                selectedSkinProblems.addAll(viewModel.profile!.skinProblems);
+                selectedAvoidIngredients.clear();
+                selectedAvoidIngredients.addAll(viewModel.profile!.avoidIngredients);
+                selectedEffects.clear();
+                selectedEffects.addAll(viewModel.profile!.desiredEffects);
+                if (viewModel.profile!.note != null) {
+                    noteController.text = viewModel.profile!.note!;
+                }
+            });
+        }
+    }
+
+    @override
     Widget build(BuildContext context) {
         return Scaffold(
             appBar: AppBar(
