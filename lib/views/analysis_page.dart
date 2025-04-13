@@ -53,6 +53,30 @@ class _AnalysisPageState extends State<AnalysisPage> {
                                     ),
                                 ),
                                 const SizedBox(height: 20),
+
+                                const Text(
+                                    '総合評価:',
+                                    style: TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                    ),
+                                ),
+                                const SizedBox(height: 10),
+                                Card(
+                                    margin: const EdgeInsets.only(bottom: 10),
+                                    color: Colors.blue.shade50,
+                                    child: Padding(
+                                        padding: const EdgeInsets.all(16),
+                                        child: Text(
+                                            analysis['overall_assessment'],
+                                            style: const TextStyle(
+                                                fontSize: 16,
+                                                height: 1.5,
+                                            ),
+                                        ),
+                                    ),
+                                ),
+                                const SizedBox(height: 30),
                                 const Text(
                                     '成分分析:',
                                     style: TextStyle(
@@ -92,32 +116,6 @@ class _AnalysisPageState extends State<AnalysisPage> {
                                         ),
                                     );
                                 })),
-                                
-                                if (analysis['overall_assessment'] != null) ...[
-                                    const SizedBox(height: 30),
-                                    const Text(
-                                        '総合評価:',
-                                        style: TextStyle(
-                                            fontSize: 20,
-                                            fontWeight: FontWeight.bold,
-                                        ),
-                                    ),
-                                    const SizedBox(height: 10),
-                                    Card(
-                                        margin: const EdgeInsets.only(bottom: 10),
-                                        color: Colors.blue.shade50,
-                                        child: Padding(
-                                            padding: const EdgeInsets.all(16),
-                                            child: Text(
-                                                analysis['overall_assessment'],
-                                                style: const TextStyle(
-                                                    fontSize: 16,
-                                                    height: 1.5,
-                                                ),
-                                            ),
-                                        ),
-                                    ),
-                                ],
                             ],
                         ),
                     );
