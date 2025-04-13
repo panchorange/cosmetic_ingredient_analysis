@@ -9,6 +9,8 @@ class SkinProfileViewModel extends ChangeNotifier {
 
     // プロフィールの保存
     void saveProfile({
+        required DateTime birthDate,
+        required String gender,
         required String skinType,
         required Set<String> skinProblems,
         required Set<String> avoidIngredients,
@@ -16,6 +18,8 @@ class SkinProfileViewModel extends ChangeNotifier {
         String? note,
     }) {
         _profile = SkinProfile(
+            birthDate: birthDate,
+            gender: gender,
             skinType: skinType,
             skinProblems: skinProblems,
             avoidIngredients: avoidIngredients,

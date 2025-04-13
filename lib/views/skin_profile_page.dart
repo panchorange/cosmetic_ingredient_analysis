@@ -13,6 +13,8 @@ class SkinProfilePage extends StatefulWidget {
 
 class _SkinProfilePageState extends State<SkinProfilePage> {
     // 選択状態を管理する変数
+    DateTime? selectedBirthDate;
+    String? selectedGender;
     String selectedSkinType = '乾燥';
     final Set<String> selectedSkinProblems = {'ニキビ', 'シミ'};
     final Set<String> selectedAvoidIngredients = {'香料', 'なし'};
@@ -26,7 +28,7 @@ class _SkinProfilePageState extends State<SkinProfilePage> {
             appBar: AppBar(
                 backgroundColor: Colors.blue,
                 title: const Text(
-                    'あなたの肌プロフィール',
+                    '肌プロフィール',
                     style: TextStyle(
                         color: Colors.white,
                         fontSize: 24,
@@ -41,71 +43,64 @@ class _SkinProfilePageState extends State<SkinProfilePage> {
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                        // 画像選択部分を追加
-                        const Text('プロフィール画像', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                        // 誕生日選択
+                        const Text('誕生日', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                         const SizedBox(height: 8),
-                        Center(
-                            child: Column(
-                                children: [
-                                    if (_selectedImage != null)
-                                        Container(
-                                            width: 150,
-                                            height: 150,
-                                            decoration: BoxDecoration(
-                                                border: Border.all(color: Colors.grey),
-                                                borderRadius: BorderRadius.circular(75),
-                                            ),
-                                            child: ClipRRect(
-                                                borderRadius: BorderRadius.circular(75),
-                                                child: Image.file(
-                                                    _selectedImage!,
-                                                    fit: BoxFit.cover,
-                                                ),
-                                            ),
-                                        )
-                                    else
-                                        Container(
-                                            width: 150,
-                                            height: 150,
-                                            decoration: BoxDecoration(
-                                                border: Border.all(color: Colors.grey),
-                                                borderRadius: BorderRadius.circular(75),
-                                            ),
-                                            child: const Center(
-                                                child: Icon(Icons.person, size: 50),
-                                            ),
-                                        ),
-                                    const SizedBox(height: 16),
-                                    Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: [
-                                            ElevatedButton.icon(
-                                                onPressed: () async {
-                                                    final viewModel = Provider.of<PictureViewModel>(context, listen: false);
-                                                    await viewModel.takePhoto();
-                                                    setState(() {
-                                                        _selectedImage = viewModel.selectedImage;
-                                                    });
-                                                },
-                                                icon: const Icon(Icons.camera_alt_outlined),
-                                                label: const Text('撮影する'),
-                                            ),
-                                            const SizedBox(width: 16),
-                                            ElevatedButton.icon(
-                                                onPressed: () async {
-                                                    final viewModel = Provider.of<PictureViewModel>(context, listen: false);
-                                                    await viewModel.pickFromGallery();
-                                                    setState(() {
-                                                        _selectedImage = viewModel.selectedImage;
-                                                    });
-                                                },
-                                                icon: const Icon(Icons.photo_library_outlined),
-                                                label: const Text('ギャラリーから選択'),
-                                            ),
-                                        ],
+                        Row(
+                            children: [
+                                TextButton(
+                                    onPressed: () async {
+                                        final DateTime? picked = await showDatePicker(
+                                            context: context,
+                                            initialDate: selectedBirthDate ?? DateTime.now(),
+                                            firstDate: DateTime(1900),
+                                            lastDate: DateTime.now(),
+                                        );
+                                        if (picked != null) {
+                                            setState(() {
+                                                selectedBirthDate = picked;
+                                            });
+                                        }
+                                    },
+                                    child: Text(
+                                        selectedBirthDate != null
+                                            ? '${selectedBirthDate!.year}年${selectedBirthDate!.month}月${selectedBirthDate!.day}日'
+                                            : '選択してください',
                                     ),
-                                ],
-                            ),
+                                ),
+                            ],
+                        ),
+                        const SizedBox(height: 24),
+
+                        // 性別選択
+                        const Text('性別', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                        const SizedBox(height: 8),
+                        Row(
+                            children: [
+                                DropdownButton<String>(
+                                    value: selectedGender,
+                                    hint: const Text('選択してください'),
+                                    items: const [
+                                        DropdownMenuItem(
+                                            value: 'male',
+                                            child: Text('男性'),
+                                        ),
+                                        DropdownMenuItem(
+                                            value: 'female',
+                                            child: Text('女性'),
+                                        ),
+                                        DropdownMenuItem(
+                                            value: 'other',
+                                            child: Text('その他'),
+                                        ),
+                                    ],
+                                    onChanged: (String? newValue) {
+                                        setState(() {
+                                            selectedGender = newValue;
+                                        });
+                                    },
+                                ),
+                            ],
                         ),
                         const SizedBox(height: 24),
 
@@ -223,6 +218,8 @@ class _SkinProfilePageState extends State<SkinProfilePage> {
                                     // ViewModelに保存
                                     final viewModel = Provider.of<SkinProfileViewModel>(context, listen: false);
                                     viewModel.saveProfile(
+                                        birthDate: selectedBirthDate ?? DateTime.now(),
+                                        gender: selectedGender ?? 'other',
                                         skinType: selectedSkinType,
                                         skinProblems: selectedSkinProblems,
                                         avoidIngredients: selectedAvoidIngredients,
@@ -232,6 +229,8 @@ class _SkinProfilePageState extends State<SkinProfilePage> {
                                     
                                     // 保存された内容を確認
                                     print('=== 保存されたプロフィール ===');
+                                    print('誕生日: ${selectedBirthDate?.year}年${selectedBirthDate?.month}月${selectedBirthDate?.day}日');
+                                    print('性別: $selectedGender');
                                     print('肌タイプ: $selectedSkinType');
                                     print('主な肌悩み: $selectedSkinProblems');
                                     print('避けたい成分: $selectedAvoidIngredients');
