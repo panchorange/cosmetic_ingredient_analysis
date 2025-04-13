@@ -73,6 +73,8 @@ class _AnalysisPageState extends State<AnalysisPage> {
                                                 fontSize: 16,
                                                 height: 1.5,
                                             ),
+                                            softWrap: true,
+                                            overflow: TextOverflow.visible,
                                         ),
                                     ),
                                 ),
@@ -94,12 +96,16 @@ class _AnalysisPageState extends State<AnalysisPage> {
                                                 crossAxisAlignment: CrossAxisAlignment.start,
                                                 children: [
                                                     Row(
+                                                        crossAxisAlignment: CrossAxisAlignment.start,
                                                         children: [
-                                                            Text(
-                                                                ingredient['name'],
-                                                                style: const TextStyle(
-                                                                    fontSize: 18,
-                                                                    fontWeight: FontWeight.bold,
+                                                            Expanded(
+                                                                child: Text(
+                                                                    ingredient['name'],
+                                                                    style: const TextStyle(
+                                                                        fontSize: 18,
+                                                                        fontWeight: FontWeight.bold,
+                                                                    ),
+                                                                    softWrap: true,
                                                                 ),
                                                             ),
                                                             const SizedBox(width: 10),
@@ -110,6 +116,8 @@ class _AnalysisPageState extends State<AnalysisPage> {
                                                     Text(
                                                         ingredient['effect'],
                                                         style: const TextStyle(fontSize: 16),
+                                                        softWrap: true,
+                                                        overflow: TextOverflow.visible,
                                                     ),
                                                 ],
                                             ),
