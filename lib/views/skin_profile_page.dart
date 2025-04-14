@@ -13,8 +13,8 @@ class SkinProfilePage extends StatefulWidget {
 
 class _SkinProfilePageState extends State<SkinProfilePage> {
     // 選択状態を管理する変数
-    DateTime? selectedBirthDate;
-    String? selectedGender;
+    DateTime? selectedBirthDate = DateTime(1995,1,1);
+    String? selectedGender = 'female';
     String selectedSkinType = '乾燥';
     final Set<String> selectedSkinProblems = {'ニキビ', 'シミ'};
     final Set<String> selectedAvoidIngredients = {'香料', 'なし'};
@@ -110,12 +110,12 @@ class _SkinProfilePageState extends State<SkinProfilePage> {
                                     hint: const Text('選択してください'),
                                     items: const [
                                         DropdownMenuItem(
-                                            value: 'male',
-                                            child: Text('男性'),
-                                        ),
-                                        DropdownMenuItem(
                                             value: 'female',
                                             child: Text('女性'),
+                                        ),
+                                        DropdownMenuItem(
+                                            value: 'male',
+                                            child: Text('男性'),
                                         ),
                                         DropdownMenuItem(
                                             value: 'other',
