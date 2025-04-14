@@ -12,7 +12,7 @@ class UserHomePage extends StatelessWidget {
     Widget build(BuildContext context) {
         return Scaffold(
             appBar: AppBar(
-                backgroundColor: Colors.blue,
+                backgroundColor: const Color(0xFFFFB6C1), // ライトピンク
                 title: const Text(
                     'コスメ成分分析',
                     style: TextStyle(
@@ -42,23 +42,42 @@ class UserHomePage extends StatelessWidget {
                                         margin: const EdgeInsets.symmetric(horizontal: 20.0),
                                         padding: const EdgeInsets.all(16.0),
                                         decoration: BoxDecoration(
-                                            color: Colors.blue.shade200,
+                                            color: const Color(0xFFFFF0F5), // ラベンダーブラッシュ
                                             borderRadius: BorderRadius.circular(10.0),
                                         ),
                                         child: const Column(
                                             crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
                                                 Text(
-                                                    '使い方',
+                                                    '✨ はじめましょう ✨',
                                                     style: TextStyle(
-                                                        fontSize: 18,
+                                                        fontSize: 20,
                                                         fontWeight: FontWeight.bold,
+                                                        color: Color(0xFF666666),
                                                     ),
                                                 ),
-                                                SizedBox(height: 10),
-                                                Text('1. プロフィールを入力（初回のみ）'),
-                                                Text('2. コスメ製品を撮影またはアップロード'),
-                                                Text('3. 分析結果を確認'),
+                                                SizedBox(height: 12),
+                                                Text(
+                                                    '1. あなたの肌の特徴を教えてね👩',
+                                                    style: TextStyle(
+                                                        color: Color(0xFF666666),
+                                                        fontSize: 16,
+                                                    ),
+                                                ),
+                                                Text(
+                                                    '2. お気に入りのコスメを撮影⭐️',
+                                                    style: TextStyle(
+                                                        color: Color(0xFF666666),
+                                                        fontSize: 16,
+                                                    ),
+                                                ),
+                                                Text(
+                                                    '3. あなたにへ分析結果をお届け📈',
+                                                    style: TextStyle(
+                                                        color: Color(0xFF666666),
+                                                        fontSize: 16,
+                                                    ),
+                                                ),
                                             ],
                                         ),
                                     ),
@@ -104,6 +123,8 @@ class UserHomePage extends StatelessWidget {
                                                 label: const Text('撮影する'),
                                                 style: ElevatedButton.styleFrom(
                                                     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                                                    backgroundColor: const Color(0xFFFFB6C1),
+                                                    foregroundColor: Colors.white,
                                                 ),
                                             ),
                                             const SizedBox(width: 16),
@@ -113,6 +134,8 @@ class UserHomePage extends StatelessWidget {
                                                 label: const Text('ギャラリーから選択'),
                                                 style: ElevatedButton.styleFrom(
                                                     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                                                    backgroundColor: const Color(0xFFFFB6C1),
+                                                    foregroundColor: Colors.white,
                                                 ),
                                             ),
                                         ],
@@ -127,7 +150,7 @@ class UserHomePage extends StatelessWidget {
                                             label: const Text('アップロードして解析'),
                                             style: ElevatedButton.styleFrom(
                                                 padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                                                backgroundColor: Colors.green,
+                                                backgroundColor: const Color(0xFFFF69B4), // ホットピンク
                                                 foregroundColor: Colors.white,
                                             ),
                                         ),
@@ -149,7 +172,7 @@ class UserHomePage extends StatelessWidget {
                                             margin: const EdgeInsets.symmetric(horizontal: 20.0),
                                             padding: const EdgeInsets.all(16.0),
                                             decoration: BoxDecoration(
-                                                color: Colors.grey.shade200,
+                                                color: const Color(0xFFFFF0F5), // ラベンダーブラッシュ
                                                 borderRadius: BorderRadius.circular(10.0),
                                             ),
                                             child: Text(pictureViewModel.resultText),

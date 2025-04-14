@@ -54,7 +54,7 @@ class _SkinProfilePageState extends State<SkinProfilePage> {
     Widget build(BuildContext context) {
         return Scaffold(
             appBar: AppBar(
-                backgroundColor: Colors.blue,
+                backgroundColor: const Color(0xFFFFB6C1), // ライトピンク
                 title: const Text(
                     '肌プロフィール',
                     style: TextStyle(
@@ -108,6 +108,11 @@ class _SkinProfilePageState extends State<SkinProfilePage> {
                                 DropdownButton<String>(
                                     value: selectedGender,
                                     hint: const Text('選択してください'),
+                                    dropdownColor: const Color(0xFFFFF0F5), // ラベンダーブラッシュ
+                                    style: const TextStyle(
+                                        color: Color(0xFF666666), // ダークグレー
+                                        fontSize: 16,
+                                    ),
                                     items: const [
                                         DropdownMenuItem(
                                             value: 'female',
@@ -239,7 +244,7 @@ class _SkinProfilePageState extends State<SkinProfilePage> {
                             width: double.infinity,
                             child: ElevatedButton(
                                 style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.blue[200],
+                                    backgroundColor: const Color(0xFFFFC0CB), // ピンク
                                     padding: const EdgeInsets.symmetric(vertical: 16),
                                 ),
                                 onPressed: () {
@@ -254,17 +259,6 @@ class _SkinProfilePageState extends State<SkinProfilePage> {
                                         desiredEffects: selectedEffects,
                                         note: noteController.text.isEmpty ? null : noteController.text,
                                     );
-                                    
-                                    // 保存された内容を確認
-                                    print('=== 保存されたプロフィール ===');
-                                    print('誕生日: ${selectedBirthDate?.year}年${selectedBirthDate?.month}月${selectedBirthDate?.day}日');
-                                    print('性別: $selectedGender');
-                                    print('肌タイプ: $selectedSkinType');
-                                    print('主な肌悩み: $selectedSkinProblems');
-                                    print('避けたい成分: $selectedAvoidIngredients');
-                                    print('求める効果: $selectedEffects');
-                                    print('特記事項: ${noteController.text}');
-                                    print('==========================');
                                     
                                     // ホーム画面に戻る
                                     Navigator.pop(context);

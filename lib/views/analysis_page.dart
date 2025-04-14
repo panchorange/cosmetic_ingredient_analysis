@@ -17,7 +17,7 @@ class _AnalysisPageState extends State<AnalysisPage> {
         return Scaffold(
             appBar: AppBar(
                 title: const Text('分析結果'),
-                backgroundColor: Colors.blue,
+                backgroundColor: const Color(0xFFFFB6C1), // ライトピンク
             ),
             body: Consumer<PictureViewModel>(
                 builder: (context, viewModel, child) {
@@ -64,7 +64,7 @@ class _AnalysisPageState extends State<AnalysisPage> {
                                 const SizedBox(height: 10),
                                 Card(
                                     margin: const EdgeInsets.only(bottom: 10),
-                                    color: Colors.blue.shade50,
+                                    color: const Color(0xFFFFF0F5), // ラベンダーブラッシュ
                                     child: Padding(
                                         padding: const EdgeInsets.all(16),
                                         child: Text(
@@ -138,16 +138,19 @@ class _AnalysisPageState extends State<AnalysisPage> {
 
         switch (rating) {
             case '良好':
-                backgroundColor = Colors.green;
+                backgroundColor = const Color(0xFF98FB98); // ペールグリーン
+                textColor = const Color(0xFF2F4F4F); // ダークスレートグレー
                 break;
             case 'やや注意':
-                backgroundColor = Colors.orange;
+                backgroundColor = const Color(0xFFFFB6C1); // ライトピンク
+                textColor = const Color(0xFF2F4F4F); // ダークスレートグレー
                 break;
             case '注意':
-                backgroundColor = Colors.red;
+                backgroundColor = const Color(0xFFFF69B4); // ホットピンク
                 break;
             default:
-                backgroundColor = Colors.grey;
+                backgroundColor = const Color(0xFFD3D3D3); // ライトグレー
+                textColor = const Color(0xFF2F4F4F); // ダークスレートグレー
         }
 
         return Chip(
