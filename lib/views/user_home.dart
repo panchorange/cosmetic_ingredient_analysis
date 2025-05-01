@@ -4,6 +4,8 @@ import 'package:provider/provider.dart';
 import '../viewmodels/picture_viewmodel.dart';
 import '../viewmodels/skin_profile_viewmodel.dart';
 import 'analysis_page.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
+import 'package:image_picker/image_picker.dart';
 
 class UserHomePage extends StatelessWidget {
     const UserHomePage({super.key});
@@ -118,7 +120,61 @@ class UserHomePage extends StatelessWidget {
                                         mainAxisAlignment: MainAxisAlignment.center,
                                         children: [
                                             ElevatedButton.icon(
-                                                onPressed: pictureViewModel.takePhoto,
+                                                onPressed: () {
+                                                    Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                            builder: (context) => Scaffold(
+                                                                appBar: AppBar(
+                                                                    title: const Text('バーコードスキャン'),
+                                                                    backgroundColor: const Color(0xFFFFB6C1),
+                                                                ),
+                                                                body: MobileScanner(
+                                                                    onDetect: (capture) {
+                                                                        final List<Barcode> barcodes = capture.barcodes;
+                                                                        for (final barcode in barcodes) {
+                                                                            final String barcodeValue = barcode.rawValue ?? '';
+                                                                            Navigator.pop(context);
+                                                                            
+                                                                            // バーコード結果をポップアップで表示
+                                                                            showDialog(
+                                                                                context: context,
+                                                                                builder: (BuildContext context) {
+                                                                                    return AlertDialog(
+                                                                                        title: const Text('バーコードスキャン完了'),
+                                                                                        content: Column(
+                                                                                            mainAxisSize: MainAxisSize.min,
+                                                                                            children: [
+                                                                                                Text('バーコード: $barcodeValue'),
+                                                                                                const SizedBox(height: 16),
+                                                                                                const Text('次に成分表を撮影してください'),
+                                                                                            ],
+                                                                                        ),
+                                                                                        actions: [
+                                                                                            TextButton(
+                                                                                                onPressed: () async {
+                                                                                                    Navigator.pop(context);
+                                                                                                    await pictureViewModel.saveBarcodeToFirebase(barcodeValue);
+                                                                                                    // バーコードスキャン後に直接カメラを起動
+                                                                                                    final XFile? photo = await ImagePicker().pickImage(source: ImageSource.camera);
+                                                                                                    if (photo != null) {
+                                                                                                        pictureViewModel.processSelectedImage(photo);
+                                                                                                    }
+                                                                                                },
+                                                                                                child: const Text('成分表を撮影'),
+                                                                                            ),
+                                                                                        ],
+                                                                                    );
+                                                                                },
+                                                                            );
+                                                                            break;
+                                                                        }
+                                                                    },
+                                                                ),
+                                                            ),
+                                                        ),
+                                                    );
+                                                },
                                                 icon: const Icon(Icons.camera_alt_outlined),
                                                 label: const Text('撮影する'),
                                                 style: ElevatedButton.styleFrom(
@@ -177,8 +233,6 @@ class UserHomePage extends StatelessWidget {
                                             ),
                                             child: Text(pictureViewModel.resultText),
                                         ),
-
-                                    const SizedBox(height: 20),
                                 ],
                             ),
                         ),

@@ -4,15 +4,32 @@ import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
 import '../models/skin_profile.dart';
 import 'dart:convert';
+import 'package:mobile_scanner/mobile_scanner.dart';
+import 'dart:async';
+import 'skin_profile_viewmodel.dart';
 
 class PictureViewModel extends ChangeNotifier {
     final ImagePicker _picker = ImagePicker();
+    final SkinProfileViewModel _skinProfileViewModel;
     bool _isLoading = false;
     String _resultText = '';
     File? _selectedImage;
     String? _uploadedImageUrl;
     SkinProfile? _currentProfile;
     Map<String, dynamic>? _analysisResult;
+    String? _barcodeResult;
+    String? _currentFolderName; // 現在のフォルダ名を保持
+
+    PictureViewModel(this._skinProfileViewModel) {
+        _loadProfile();
+    }
+
+    // プロフィール情報を読み込む
+    Future<void> _loadProfile() async {
+        await _skinProfileViewModel.loadProfile();
+        _currentProfile = _skinProfileViewModel.profile;
+        notifyListeners();
+    }
 
     // Getters
     bool get isLoading => _isLoading;
@@ -21,6 +38,7 @@ class PictureViewModel extends ChangeNotifier {
     String? get uploadedImageUrl => _uploadedImageUrl;
     SkinProfile? get currentProfile => _currentProfile;
     Map<String, dynamic>? get analysisResult => _analysisResult;
+    String? get barcodeResult => _barcodeResult;
 
     // プロフィール情報を設定
     void setProfile(SkinProfile profile) {
@@ -29,10 +47,123 @@ class PictureViewModel extends ChangeNotifier {
         notifyListeners();
     }
 
+    // バーコードスキャン結果を設定
+    void setBarcodeResult(String result) {
+        _barcodeResult = result;
+        print('バーコードスキャン結果: $result'); // デバッグ表示を追加
+        notifyListeners();
+    }
+
+    // バーコードスキャン用のプライベートメソッド
+    Future<String?> _scanBarcode() async {
+        try {
+            final MobileScannerController controller = MobileScannerController();
+            final Completer<String?> completer = Completer<String?>();
+            
+            controller.start();
+            
+            controller.barcodes.listen((capture) {
+                final List<Barcode> barcodes = capture.barcodes;
+                if (barcodes.isNotEmpty) {
+                    final barcode = barcodes.first.rawValue;
+                    controller.stop();
+                    completer.complete(barcode);
+                }
+            });
+
+            // タイムアウトを設定（5秒）
+            return await completer.future.timeout(
+                const Duration(seconds: 5),
+                onTimeout: () {
+                    controller.stop();
+                    return null;
+                }
+            );
+        } catch (e) {
+            print('バーコードスキャンエラー: $e');
+            return null;
+        }
+    }
+
     // 画像を撮影するメソッド
     Future<void> takePhoto() async {
-        final XFile? photo = await _picker.pickImage(source: ImageSource.camera);
-        processSelectedImage(photo);
+        _isLoading = true;
+        notifyListeners();
+
+        try {
+            // バーコードスキャン
+            final barcode = await _scanBarcode();
+            if (barcode != null) {
+                await saveBarcodeToFirebase(barcode);
+            }
+
+            // 写真撮影
+            final XFile? photo = await _picker.pickImage(source: ImageSource.camera);
+            if (photo != null) {
+                processSelectedImage(photo);
+            }
+        } finally {
+            _isLoading = false;
+            notifyListeners();
+        }
+    }
+
+    // 最新のフォルダ番号を取得するメソッド
+    Future<int> _getLatestFolderNumber() async {
+        try {
+            final storageRef = FirebaseStorage.instance.ref(); // ストレージの参照を取得
+            final scanlogRef = storageRef.child('scanlog'); // scanlogフォルダの参照を取得
+            
+            // scanlogフォルダ内の全てのフォルダをリストアップ
+            final result = await scanlogRef.listAll();
+            
+            // フォルダ名から数字を抽出して最大値を取得
+            int maxNumber = 0;
+            for (var folder in result.prefixes) {
+                final folderName = folder.name;
+                final number = int.tryParse(folderName);
+                if (number != null && number > maxNumber) {
+                    maxNumber = number;
+                }
+            }
+            
+            return maxNumber;
+        } catch (e) {
+            print('フォルダ番号取得エラー: $e');
+            return 0;
+        }
+    }
+
+    // 新しいフォルダを作成するメソッド
+    Future<String> _createNewFolder() async {
+        int latestNumber = await _getLatestFolderNumber();
+        _currentFolderName = (latestNumber + 1).toString();
+        return _currentFolderName!;
+    }
+
+    // バーコードデータをFirebaseに保存
+    Future<void> saveBarcodeToFirebase(String barcode) async {
+        try {
+            // 新しいフォルダを作成
+            String folderName = await _createNewFolder();
+            
+            final storageRef = FirebaseStorage.instance.ref();
+            final barcodeRef = storageRef.child('scanlog').child(folderName).child('barcode_$barcode.txt');
+            
+            await barcodeRef.putString(barcode);
+            print('バーコードデータの保存完了: barcode_$barcode.txt in folder: $folderName');
+
+            // プロフィール情報が存在する場合は保存
+            if (_currentProfile != null) {
+                await _uploadProfileToFirebase(folderName);
+                print('プロフィール情報を保存しました: folder $folderName');
+            }
+
+            setBarcodeResult(barcode);
+        } catch (e) {
+            print('バーコードデータの保存でエラー発生: $e');
+            rethrow;
+        }
     }
 
     // ギャラリーから画像を選択するメソッド
@@ -56,8 +187,7 @@ class PictureViewModel extends ChangeNotifier {
     Future<String> _uploadImageToFirebase(File imageFile, String folderName) async {
         print('画像アップロード開始: フォルダ名=$folderName');
         final storageRef = FirebaseStorage.instance.ref();
-        // フォルダ構造を作成するためにフォルダ名とファイル名を分けて指定
-        final cosmesRef = storageRef.child('cosmes').child(folderName).child('image.jpg');
+        final cosmesRef = storageRef.child('scanlog').child(folderName).child('ocr_source.jpg');
         print('アップロード先パス: ${cosmesRef.fullPath}');
 
         final uploadTask = cosmesRef.putFile(
@@ -100,14 +230,13 @@ class PictureViewModel extends ChangeNotifier {
         try {
             final storageRef = FirebaseStorage.instance.ref();
             // フォルダ構造を作成するためにフォルダ名とファイル名を分けて指定
-            final profileRef = storageRef.child('cosmes').child(folderName).child('profile.txt');
+            final profileRef = storageRef.child('scanlog').child(folderName).child('profile.txt');
 
             // 年齢を計算
             int age = _calculateAge(_currentProfile!.birthDate);
 
             // プロフィール情報をテキスト形式に変換
             String profileText = '''
-            
             年齢: $age歳
             性別: ${_currentProfile!.gender}
             肌タイプ: ${_currentProfile!.skinType}
@@ -117,7 +246,7 @@ class PictureViewModel extends ChangeNotifier {
             特記事項: ${_currentProfile!.note ?? 'なし'}
             ''';
 
-            print('アップロード予定のプロフィールテキスト:\n$profileText');
+            print('アップロード予定のプロフィール:\n$profileText');
 
             // テキストファイルをアップロード
             await profileRef.putString(profileText);
@@ -137,18 +266,19 @@ class PictureViewModel extends ChangeNotifier {
         notifyListeners();
 
         try {
-            String randomNum = (100000 + (DateTime.now().microsecondsSinceEpoch % 900000)).toString();
-            String timestamp = DateTime.now().toIso8601String()
-                                .replaceAll(RegExp(r'[-:\.TZ]'), '')
-                                .substring(0, 14);
-            String folderName = '${randomNum}_$timestamp';
+            // プロフィール情報を再読み込み
+            await _loadProfile();
+
+            // バーコードスキャンが完了していない場合は新しいフォルダを作成
+            String folderName = _currentFolderName ?? await _createNewFolder();
             
             String imageUrl = await _uploadImageToFirebase(_selectedImage!, folderName);
             print('画像のアップロード完了: $imageUrl');
             
+            // プロフィール情報が存在する場合は保存
             if (_currentProfile != null) {
-                print('プロフィール情報のアップロードを開始');
                 await _uploadProfileToFirebase(folderName);
+                print('プロフィール情報を保存しました: folder $folderName');
                 _resultText = 'アップロード成功！\n画像とプロフィール情報を保存しました。\nURL: $imageUrl';
             } else {
                 print('プロフィール情報が設定されていません');
@@ -174,7 +304,7 @@ class PictureViewModel extends ChangeNotifier {
     Future<void> _fetchAnalysisResult(String folderName) async {
         try {
             final storageRef = FirebaseStorage.instance.ref();
-            final analysisRef = storageRef.child('cosmes').child(folderName).child('analysis_result.json');
+            final analysisRef = storageRef.child('scanlog').child(folderName).child('analysis_result.json');
             
             // ファイルをダウンロード
             final bytes = await analysisRef.getData();

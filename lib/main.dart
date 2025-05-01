@@ -28,13 +28,54 @@ class CosmeAnalyzer extends StatelessWidget {
     Widget build(BuildContext context) {
         return MultiProvider(
             providers: [
-                ChangeNotifierProvider(create: (context) => PictureViewModel()),
                 ChangeNotifierProvider(create: (context) => SkinProfileViewModel()),
+                ChangeNotifierProxyProvider<SkinProfileViewModel, PictureViewModel>(
+                    create: (context) => PictureViewModel(Provider.of<SkinProfileViewModel>(context, listen: false)),
+                    update: (context, skinProfileViewModel, previous) => 
+                        previous ?? PictureViewModel(skinProfileViewModel),
+                ),
             ],
             child: MaterialApp(
                 title: 'コスメ成分分析',
                 theme: ThemeData(
-                    colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+                    colorScheme: ColorScheme.fromSeed(
+                        seedColor: const Color(0xFFFFB6C1),
+                        primary: const Color(0xFFFFB6C1),
+                        secondary: const Color(0xFFFF69B4),
+                        background: Colors.white,
+                        surface: const Color(0xFFFFF0F5),
+                    ),
+                    scaffoldBackgroundColor: Colors.white,
+                    appBarTheme: const AppBarTheme(
+                        backgroundColor: Color(0xFFFFB6C1),
+                        foregroundColor: Colors.white,
+                        elevation: 0,
+                    ),
+                    elevatedButtonTheme: ElevatedButtonThemeData(
+                        style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFFFFB6C1),
+                            foregroundColor: Colors.white,
+                            elevation: 2,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                            ),
+                        ),
+                    ),
+                    cardTheme: CardTheme(
+                        color: const Color(0xFFFFF0F5),
+                        elevation: 2,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                        ),
+                    ),
+                    chipTheme: ChipThemeData(
+                        backgroundColor: const Color(0xFFFFF0F5),
+                        selectedColor: const Color(0xFFFFB6C1),
+                        labelStyle: const TextStyle(color: Color(0xFF666666)),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                        ),
+                    ),
                 ),
                 localizationsDelegates: const [
                     GlobalMaterialLocalizations.delegate,
