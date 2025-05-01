@@ -99,5 +99,6 @@ coverage.xml
 
 # 公開したらNGのもの
 android/app/google-services.json
+android/google-services.json
 
 .vscode/

@@ -1,0 +1,148 @@
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../viewmodels/auth_viewmodel.dart';
+import 'user_home.dart';
+
+class LoginPage extends StatelessWidget {
+  const LoginPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Consumer<AuthViewModel>(
+        builder: (context, authViewModel, _) {
+          // ログイン済みの場合はホーム画面に移動
+          if (authViewModel.isLoggedIn) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              Navigator.of(context).pushReplacement(
+                MaterialPageRoute(builder: (_) => const UserHomePage()),
+              );
+            });
+          }
+          
+          return Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [Color(0xFFFFF0F5), Colors.white],
+              ),
+            ),
+            child: Center(
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.all(24.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      // アプリロゴやイメージ
+                      Container(
+                        width: 120,
+                        height: 120,
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFFFB6C1),
+                          borderRadius: BorderRadius.circular(60),
+                        ),
+                        child: const Icon(
+                          Icons.spa_outlined,
+                          size: 60,
+                          color: Colors.white,
+                        ),
+                      ),
+                      const SizedBox(height: 24),
+                      
+                      // アプリタイトル
+                      const Text(
+                        'コスメ成分分析',
+                        style: TextStyle(
+                          fontSize: 28,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFFFF69B4),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      
+                      // アプリ説明
+                      const Text(
+                        '化粧品の成分を分析して、あなたに合った製品を見つけましょう',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.grey,
+                        ),
+                      ),
+                      const SizedBox(height: 48),
+                      
+                      // Googleログインボタン
+                      if (authViewModel.isLoading)
+                        const CircularProgressIndicator(
+                          valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFFFB6C1)),
+                        )
+                      else
+                        ElevatedButton.icon(
+                          icon: Image.network(
+                            'https://cdn1.iconfinder.com/data/icons/google-s-logo/150/Google_Icons-09-512.png',
+                            width: 24,
+                            height: 24,
+                          ),
+                          label: const Padding(
+                            padding: EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+                            child: Text(
+                              'Googleでログイン',
+                              style: TextStyle(fontSize: 16),
+                            ),
+                          ),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.white,
+                            foregroundColor: Colors.black87,
+                            elevation: 2,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                          onPressed: () async {
+                            final success = await authViewModel.signInWithGoogle();
+                            if (!success && context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(authViewModel.errorMessage ?? 'ログインに失敗しました'),
+                                  backgroundColor: Colors.red,
+                                ),
+                              );
+                            }
+                          },
+                        ),
+                      
+                      // エラーメッセージ
+                      if (authViewModel.errorMessage != null)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 16),
+                          child: Text(
+                            authViewModel.errorMessage!,
+                            style: const TextStyle(color: Colors.red),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      
+                      const SizedBox(height: 24),
+                      
+                      // プライバシーポリシーなど
+                      const Text(
+                        'ログインすることで、利用規約とプライバシーポリシーに同意したことになります。',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+} 

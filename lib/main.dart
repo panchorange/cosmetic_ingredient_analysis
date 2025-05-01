@@ -4,9 +4,11 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 import 'viewmodels/picture_viewmodel.dart';
 import 'viewmodels/skin_profile_viewmodel.dart';
+import 'viewmodels/auth_viewmodel.dart';
 import 'views/user_home.dart';
 import 'views/skin_profile_page.dart';
 import 'views/analysis_page.dart';
+import 'views/login_page.dart';
 
 void main() async {
     WidgetsFlutterBinding.ensureInitialized();
@@ -28,6 +30,7 @@ class CosmeAnalyzer extends StatelessWidget {
     Widget build(BuildContext context) {
         return MultiProvider(
             providers: [
+                ChangeNotifierProvider(create: (context) => AuthViewModel()),
                 ChangeNotifierProvider(create: (context) => SkinProfileViewModel()),
                 ChangeNotifierProxyProvider<SkinProfileViewModel, PictureViewModel>(
                     create: (context) => PictureViewModel(Provider.of<SkinProfileViewModel>(context, listen: false)),
@@ -87,9 +90,12 @@ class CosmeAnalyzer extends StatelessWidget {
                     Locale('en', 'US'),
                 ],
                 locale: const Locale('ja', 'JP'),
-                home: Builder(
-                    builder: (context) {
-                        return const UserHomePage();
+                home: Consumer<AuthViewModel>(
+                    builder: (context, authViewModel, _) {
+                        // 認証状態に基づいて表示する画面を切り替え
+                        return authViewModel.isLoggedIn
+                            ? const UserHomePage()
+                            : const LoginPage();
                     },
                 ),
                 routes: {
