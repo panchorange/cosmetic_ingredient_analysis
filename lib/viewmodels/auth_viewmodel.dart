@@ -24,6 +24,11 @@ class AuthViewModel extends ChangeNotifier {
     });
   }
   
+  // 現在のユーザーUIDを取得
+  String? getCurrentUid() {
+    return _currentUser?.uid;
+  }
+  
   // Googleでサインイン
   Future<bool> signInWithGoogle() async {
     _isLoading = true;
