@@ -68,7 +68,7 @@ class _AnalysisPageState extends State<AnalysisPage> {
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
                                             Text(
-                                                '製品名: ${analysis['product_name']}',
+                                                '製品名: ${analysis['product_name'] ?? "製品名なし" }',
                                                 style: const TextStyle(
                                                     fontSize: 24,
                                                     fontWeight: FontWeight.bold,
@@ -77,7 +77,7 @@ class _AnalysisPageState extends State<AnalysisPage> {
                                             SizedBox(height: AppSpacing.sm),
 
                                             Text(
-                                                '総合評価: ${analysis["overall_score"]}',
+                                                '総合評価: ${analysis["overall_score"] ?? "総合評価(数値)の値がありません" }',
                                                 style: const TextStyle(
                                                     fontSize: 20,
                                                     fontWeight: FontWeight.bold,
@@ -90,7 +90,7 @@ class _AnalysisPageState extends State<AnalysisPage> {
                                                 child: Padding(
                                                     padding: const EdgeInsets.all(16),
                                                     child: Text(
-                                                        analysis['overall_assessment'],
+                                                        analysis['overall_assessment'] ?? "総合評価(説明文)の値がありません",
                                                         style: const TextStyle(
                                                             fontSize: 16,
                                                             height: 1.5,
