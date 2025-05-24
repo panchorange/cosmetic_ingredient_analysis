@@ -54,9 +54,9 @@ class _AnalysisPageState extends State<AnalysisPage> {
                                 ),
                                 const SizedBox(height: 20),
 
-                                const Text(
-                                    '総合評価:',
-                                    style: TextStyle(
+                                Text(
+                                    '総合評価: ${analysis["overall_score"]}',
+                                    style: const TextStyle(
                                         fontSize: 20,
                                         fontWeight: FontWeight.bold,
                                     ),
