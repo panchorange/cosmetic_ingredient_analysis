@@ -6,6 +6,7 @@ import '../viewmodels/skin_profile_viewmodel.dart';
 import 'analysis_page.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:image_picker/image_picker.dart';
+import '../utils/contents/app_colors.dart';
 
 class UserHomePage extends StatelessWidget {
     const UserHomePage({super.key});

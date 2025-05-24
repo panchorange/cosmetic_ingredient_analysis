@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import '../models/skin_profile.dart';
+import '../utils/contents/app_colors.dart';
 
 class SkinProfileViewModel extends ChangeNotifier {
     SkinProfile? _profile;

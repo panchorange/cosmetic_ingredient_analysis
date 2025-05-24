@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../viewmodels/skin_profile_viewmodel.dart';
 import '../viewmodels/picture_viewmodel.dart';
+import '../utils/contents/app_colors.dart';
 import 'dart:io';
 
 class SkinProfilePage extends StatefulWidget {
