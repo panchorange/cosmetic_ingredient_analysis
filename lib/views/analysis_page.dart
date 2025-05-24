@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../viewmodels/picture_viewmodel.dart';
 import '../utils/contents/app_colors.dart';
+import '../utils/contents/app_spacing.dart';
 
 class AnalysisPage extends StatefulWidget {
     const AnalysisPage({super.key});
@@ -17,8 +18,17 @@ class _AnalysisPageState extends State<AnalysisPage> {
     Widget build(BuildContext context) {
         return Scaffold(
             appBar: AppBar(
-                title: const Text('分析結果'),
-                backgroundColor: AppColors.lightPink, // ライトピンク
+                backgroundColor: AppColors.lightPink,
+                title: const Text(
+                    '分析結果',
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 24,
+                        fontFamily: 'Roboto',
+                        letterSpacing: 2.0
+                    )
+                ),
+                centerTitle: true,
             ),
             body: Consumer<PictureViewModel>(
                 builder: (context, viewModel, child) {
@@ -42,89 +52,104 @@ class _AnalysisPageState extends State<AnalysisPage> {
 
                     final analysis = viewModel.analysisResult!;
                     return SingleChildScrollView(
-                        padding: const EdgeInsets.all(16),
+                        padding: EdgeInsets.all(AppSpacing.defaultPadding),
                         child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                                Text(
-                                    '製品名: ${analysis['product_name']}',
-                                    style: const TextStyle(
-                                        fontSize: 24,
-                                        fontWeight: FontWeight.bold,
+                                Container(
+                                    width: double.infinity,
+                                    margin: EdgeInsets.symmetric(vertical: AppSpacing.md),
+                                    padding: EdgeInsets.all(AppSpacing.defaultPadding),
+                                    decoration: BoxDecoration(
+                                        color: AppColors.lavenderBrush,
+                                        borderRadius: BorderRadius.circular(AppSpacing.sm),
                                     ),
-                                ),
-                                const SizedBox(height: 20),
-
-                                Text(
-                                    '総合評価: ${analysis["overall_score"]}',
-                                    style: const TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold,
-                                    ),
-                                ),
-                                const SizedBox(height: 10),
-                                Card(
-                                    margin: const EdgeInsets.only(bottom: 10),
-                                    color: AppColors.lavenderBrush, // ラベンダーブラッシュ
-                                    child: Padding(
-                                        padding: const EdgeInsets.all(16),
-                                        child: Text(
-                                            analysis['overall_assessment'],
-                                            style: const TextStyle(
-                                                fontSize: 16,
-                                                height: 1.5,
+                                    child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                            Text(
+                                                '製品名: ${analysis['product_name']}',
+                                                style: const TextStyle(
+                                                    fontSize: 24,
+                                                    fontWeight: FontWeight.bold,
+                                                ),
                                             ),
-                                            softWrap: true,
-                                            overflow: TextOverflow.visible,
-                                        ),
-                                    ),
-                                ),
-                                const SizedBox(height: 30),
-                                const Text(
-                                    '成分分析:',
-                                    style: TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold,
-                                    ),
-                                ),
-                                const SizedBox(height: 10),
-                                ...List<Widget>.from((analysis['ingredients'] as List).map((ingredient) {
-                                    return Card(
-                                        margin: const EdgeInsets.only(bottom: 10),
-                                        child: Padding(
-                                            padding: const EdgeInsets.all(12),
-                                            child: Column(
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                children: [
-                                                    Row(
-                                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                                        children: [
-                                                            Expanded(
-                                                                child: Text(
-                                                                    ingredient['name'],
-                                                                    style: const TextStyle(
-                                                                        fontSize: 18,
-                                                                        fontWeight: FontWeight.bold,
-                                                                    ),
-                                                                    softWrap: true,
-                                                                ),
-                                                            ),
-                                                            const SizedBox(width: 10),
-                                                            _buildRatingChip(ingredient['rating']),
-                                                        ],
-                                                    ),
-                                                    const SizedBox(height: 8),
-                                                    Text(
-                                                        ingredient['effect'],
-                                                        style: const TextStyle(fontSize: 16),
+                                            SizedBox(height: AppSpacing.sm),
+
+                                            Text(
+                                                '総合評価: ${analysis["overall_score"]}',
+                                                style: const TextStyle(
+                                                    fontSize: 20,
+                                                    fontWeight: FontWeight.bold,
+                                                ),
+                                            ),
+                                            const SizedBox(height: 10),
+                                            Card(
+                                                margin: const EdgeInsets.only(bottom: 10),
+                                                color: AppColors.lavenderBrush, // ラベンダーブラッシュ
+                                                child: Padding(
+                                                    padding: const EdgeInsets.all(16),
+                                                    child: Text(
+                                                        analysis['overall_assessment'],
+                                                        style: const TextStyle(
+                                                            fontSize: 16,
+                                                            height: 1.5,
+                                                        ),
                                                         softWrap: true,
                                                         overflow: TextOverflow.visible,
                                                     ),
-                                                ],
+                                                ),
                                             ),
-                                        ),
-                                    );
-                                })),
+                                            const SizedBox(height: 30),
+                                            const Text(
+                                                '成分分析:',
+                                                style: TextStyle(
+                                                    fontSize: 20,
+                                                    fontWeight: FontWeight.bold,
+                                                ),
+                                            ),
+                                            const SizedBox(height: 10),
+                                            ...List<Widget>.from((analysis['ingredients'] as List).map((ingredient) {
+                                                return Card(
+                                                    margin: const EdgeInsets.only(bottom: 10),
+                                                    child: Padding(
+                                                        padding: const EdgeInsets.all(12),
+                                                        child: Column(
+                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                            children: [
+                                                                Row(
+                                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                                    children: [
+                                                                        Expanded(
+                                                                            child: Text(
+                                                                                ingredient['name'],
+                                                                                style: const TextStyle(
+                                                                                    fontSize: 18,
+                                                                                    fontWeight: FontWeight.bold,
+                                                                                ),
+                                                                                softWrap: true,
+                                                                            ),
+                                                                        ),
+                                                                        const SizedBox(width: 10),
+                                                                        _buildRatingChip(ingredient['rating']),
+                                                                    ],
+                                                                ),
+                                                                const SizedBox(height: 8),
+                                                                Text(
+                                                                    ingredient['effect'],
+                                                                    style: const TextStyle(fontSize: 16),
+                                                                    softWrap: true,
+                                                                    overflow: TextOverflow.visible,
+                                                                ),
+                                                            ],
+                                                        ),
+                                                    ),
+                                                );
+                                            })),
+                                        ],
+                                    ),
+                                ),
+                                SizedBox(height: AppSpacing.lg),
                             ],
                         ),
                     );

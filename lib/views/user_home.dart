@@ -3,10 +3,11 @@ import 'dart:io';
 import 'package:provider/provider.dart';
 import '../viewmodels/picture_viewmodel.dart';
 import '../viewmodels/skin_profile_viewmodel.dart';
+import '../utils/contents/app_colors.dart';
+import '../utils/contents/app_spacing.dart';
 import 'analysis_page.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:image_picker/image_picker.dart';
-import '../utils/contents/app_colors.dart';
 
 class UserHomePage extends StatelessWidget {
     const UserHomePage({super.key});
@@ -39,11 +40,11 @@ class UserHomePage extends StatelessWidget {
                         child: Center(
                             child: Column(
                                 children: [
-                                    const SizedBox(height: 20),
+                                    SizedBox(height: AppSpacing.md),
                                     Container(
                                         width: double.infinity,
-                                        margin: const EdgeInsets.symmetric(horizontal: 20.0),
-                                        padding: const EdgeInsets.all(16.0),
+                                        margin: EdgeInsets.symmetric(horizontal: AppSpacing.contentMargin),
+                                        padding: EdgeInsets.all(AppSpacing.defaultPadding),
                                         decoration: BoxDecoration(
                                             color: AppColors.lavenderBrush, // ラベンダーブラッシュ
                                             borderRadius: BorderRadius.circular(10.0),
@@ -84,7 +85,7 @@ class UserHomePage extends StatelessWidget {
                                             ],
                                         ),
                                     ),
-                                    const SizedBox(height: 20),
+                                    SizedBox(height: AppSpacing.md),
 
                                     if (pictureViewModel.selectedImage != null)
                                         Container(
@@ -92,10 +93,10 @@ class UserHomePage extends StatelessWidget {
                                             height: 250,
                                             decoration: BoxDecoration(
                                                 border: Border.all(color: Colors.grey),
-                                                borderRadius: BorderRadius.circular(8),
+                                                borderRadius: BorderRadius.circular(AppSpacing.sm),
                                             ),
                                             child: ClipRRect(
-                                                borderRadius: BorderRadius.circular(8),
+                                                borderRadius: BorderRadius.circular(AppSpacing.sm),
                                                 child: Image.file(
                                                     pictureViewModel.selectedImage!,
                                                     fit: BoxFit.cover,
@@ -108,14 +109,14 @@ class UserHomePage extends StatelessWidget {
                                             height: 250,
                                             decoration: BoxDecoration(
                                                 border: Border.all(color: Colors.grey),
-                                                borderRadius: BorderRadius.circular(8),
+                                                borderRadius: BorderRadius.circular(AppSpacing.sm),
                                             ),
                                             child: const Center(
                                                 child: Text('画像が選択されていません'),
                                             ),
                                         ),
 
-                                    const SizedBox(height: 20),
+                                    SizedBox(height: AppSpacing.md),
 
                                     Row(
                                         mainAxisAlignment: MainAxisAlignment.center,
@@ -179,18 +180,24 @@ class UserHomePage extends StatelessWidget {
                                                 icon: const Icon(Icons.camera_alt_outlined),
                                                 label: const Text('撮影する'),
                                                 style: ElevatedButton.styleFrom(
-                                                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                                                    padding: EdgeInsets.symmetric(
+                                                        horizontal: AppSpacing.md,
+                                                        vertical: AppSpacing.sm
+                                                    ),
                                                     backgroundColor: AppColors.lightPink,
                                                     foregroundColor: Colors.white,
                                                 ),
                                             ),
-                                            const SizedBox(width: 16),
+                                            SizedBox(width: AppSpacing.md),
                                             ElevatedButton.icon(
                                                 onPressed: pictureViewModel.pickFromGallery,
                                                 icon: const Icon(Icons.photo_library_outlined),
                                                 label: const Text('ギャラリーから選択'),
                                                 style: ElevatedButton.styleFrom(
-                                                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                                                    padding: EdgeInsets.symmetric(
+                                                        horizontal: AppSpacing.md,
+                                                        vertical: AppSpacing.sm
+                                                    ),
                                                     backgroundColor: AppColors.lightPink,
                                                     foregroundColor: Colors.white,
                                                 ),
@@ -198,7 +205,7 @@ class UserHomePage extends StatelessWidget {
                                         ],
                                     ),
 
-                                    const SizedBox(height: 20),
+                                    SizedBox(height: AppSpacing.md),
 
                                     if (pictureViewModel.selectedImage != null)
                                         ElevatedButton.icon(
@@ -206,28 +213,31 @@ class UserHomePage extends StatelessWidget {
                                             icon: const Icon(Icons.cloud_upload),
                                             label: const Text('アップロードして解析'),
                                             style: ElevatedButton.styleFrom(
-                                                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                                                padding: EdgeInsets.symmetric(
+                                                    horizontal: AppSpacing.lg,
+                                                    vertical: AppSpacing.md
+                                                ),
                                                 backgroundColor: const Color(0xFFFF69B4), // ホットピンク
                                                 foregroundColor: Colors.white,
                                             ),
                                         ),
 
-                                    const SizedBox(height: 20),
+                                    SizedBox(height: AppSpacing.md),
 
                                     if (pictureViewModel.isLoading)
-                                        const Column(
+                                        Column(
                                             children: [
-                                                CircularProgressIndicator(),
-                                                SizedBox(height: 10),
-                                                Text('処理中...'),
+                                                const CircularProgressIndicator(),
+                                                SizedBox(height: AppSpacing.sm),
+                                                const Text('処理中...'),
                                             ],
                                         ),
 
                                     if (pictureViewModel.resultText.isNotEmpty)
                                         Container(
                                             width: double.infinity,
-                                            margin: const EdgeInsets.symmetric(horizontal: 20.0),
-                                            padding: const EdgeInsets.all(16.0),
+                                            margin: EdgeInsets.symmetric(horizontal: AppSpacing.contentMargin),
+                                            padding: EdgeInsets.all(AppSpacing.defaultPadding),
                                             decoration: BoxDecoration(
                                                 color: const Color(0xFFFFF0F5), // ラベンダーブラッシュ
                                                 borderRadius: BorderRadius.circular(10.0),

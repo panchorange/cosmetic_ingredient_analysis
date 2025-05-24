@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../viewmodels/auth_viewmodel.dart';
 import 'user_home.dart';
 import '../utils/contents/app_colors.dart';
+import '../utils/contents/app_spacing.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
@@ -22,6 +23,7 @@ class LoginPage extends StatelessWidget {
           }
           
           return Container(
+            padding: EdgeInsets.all(AppSpacing.defaultPadding),
             decoration: const BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
@@ -75,55 +77,70 @@ class LoginPage extends StatelessWidget {
                       const SizedBox(height: 48),
                       
                       // Googleログインボタン
-                      if (authViewModel.isLoading)
-                        const CircularProgressIndicator(
-                          valueColor: AlwaysStoppedAnimation<Color>(AppColors.lightPink),
-                        )
-                      else
-                        ElevatedButton.icon(
-                          icon: Image.network(
-                            'https://cdn1.iconfinder.com/data/icons/google-s-logo/150/Google_Icons-09-512.png',
-                            width: 24,
-                            height: 24,
-                          ),
-                          label: const Padding(
-                            padding: EdgeInsets.symmetric(vertical: 12, horizontal: 8),
-                            child: Text(
-                              'Googleでログイン',
-                              style: TextStyle(fontSize: 16),
-                            ),
-                          ),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.white,
-                            foregroundColor: Colors.black87,
-                            elevation: 2,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                          ),
-                          onPressed: () async {
-                            final success = await authViewModel.signInWithGoogle();
-                            if (!success && context.mounted) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(authViewModel.errorMessage ?? 'ログインに失敗しました'),
-                                  backgroundColor: Colors.red,
+                      SizedBox(height: AppSpacing.xl),
+                      Container(
+                        padding: EdgeInsets.all(AppSpacing.defaultPadding),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.9),
+                          borderRadius: BorderRadius.circular(AppSpacing.md),
+                        ),
+                        child: Column(
+                          children: [
+                            if (authViewModel.isLoading)
+                              Padding(
+                                padding: EdgeInsets.only(top: AppSpacing.md),
+                                child: const CircularProgressIndicator(),
+                              ),
+                            if (authViewModel.isLoading)
+                              const SizedBox(height: 24),
+                            ElevatedButton.icon(
+                              icon: Image.network(
+                                'https://cdn1.iconfinder.com/data/icons/google-s-logo/150/Google_Icons-09-512.png',
+                                width: 24,
+                                height: 24,
+                              ),
+                              label: const Padding(
+                                padding: EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+                                child: Text(
+                                  'Googleでログイン',
+                                  style: TextStyle(fontSize: 16),
                                 ),
-                              );
-                            }
-                          },
+                              ),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.white,
+                                foregroundColor: Colors.black87,
+                                elevation: 2,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: AppSpacing.lg,
+                                  vertical: AppSpacing.md
+                                ),
+                              ),
+                              onPressed: () async {
+                                final success = await authViewModel.signInWithGoogle();
+                                if (!success && context.mounted) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(authViewModel.errorMessage ?? 'ログインに失敗しました'),
+                                      backgroundColor: Colors.red,
+                                    ),
+                                  );
+                                }
+                              },
+                            ),
+                            if (authViewModel.errorMessage != null)
+                              Padding(
+                                padding: EdgeInsets.only(top: AppSpacing.md),
+                                child: Text(
+                                  authViewModel.errorMessage!,
+                                  style: const TextStyle(color: Colors.red),
+                                ),
+                              ),
+                          ],
                         ),
-                      
-                      // エラーメッセージ
-                      if (authViewModel.errorMessage != null)
-                        Padding(
-                          padding: const EdgeInsets.only(top: 16),
-                          child: Text(
-                            authViewModel.errorMessage!,
-                            style: const TextStyle(color: Colors.red),
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
+                      ),
                       
                       const SizedBox(height: 24),
                       

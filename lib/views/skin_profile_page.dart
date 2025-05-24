@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../viewmodels/skin_profile_viewmodel.dart';
 import '../viewmodels/picture_viewmodel.dart';
 import '../utils/contents/app_colors.dart';
+import '../utils/contents/app_spacing.dart';
 import 'dart:io';
 
 class SkinProfilePage extends StatefulWidget {
@@ -68,13 +69,12 @@ class _SkinProfilePageState extends State<SkinProfilePage> {
                 centerTitle: true,
             ),
             body: SingleChildScrollView(
-                padding: const EdgeInsets.all(16.0),
+                padding: EdgeInsets.all(AppSpacing.defaultPadding),
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                        // 誕生日選択
                         const Text('誕生日', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                        const SizedBox(height: 8),
+                        SizedBox(height: AppSpacing.sm),
                         Row(
                             children: [
                                 TextButton(
@@ -99,11 +99,10 @@ class _SkinProfilePageState extends State<SkinProfilePage> {
                                 ),
                             ],
                         ),
-                        const SizedBox(height: 24),
+                        SizedBox(height: AppSpacing.lg),
 
-                        // 性別選択
                         const Text('性別', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                        const SizedBox(height: 8),
+                        SizedBox(height: AppSpacing.sm),
                         Row(
                             children: [
                                 DropdownButton<String>(
@@ -136,12 +135,12 @@ class _SkinProfilePageState extends State<SkinProfilePage> {
                                 ),
                             ],
                         ),
-                        const SizedBox(height: 24),
+                        SizedBox(height: AppSpacing.lg),
 
                         const Text('肌タイプ', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                        const SizedBox(height: 8),
+                        SizedBox(height: AppSpacing.sm),
                         Wrap(
-                            spacing: 8,
+                            spacing: AppSpacing.itemSpacing,
                             children: ['乾燥', '脂性', '混合', '敏感' ,'普通'].map((type) {
                                 return ChoiceChip(
                                     label: Text(type),
@@ -154,12 +153,12 @@ class _SkinProfilePageState extends State<SkinProfilePage> {
                                 );
                             }).toList(),
                         ),
-                        const SizedBox(height: 24),
+                        SizedBox(height: AppSpacing.lg),
 
                         const Text('主な肌悩み', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                        const SizedBox(height: 8),
+                        SizedBox(height: AppSpacing.sm),
                         Wrap(
-                            spacing: 8,
+                            spacing: AppSpacing.itemSpacing,
                             children: ['ニキビ', '乾燥', 'シミ', 'くすみ', '毛穴', 'しわ/たるみ'].map((problem) {
                                 return FilterChip(
                                     label: Text(problem),
@@ -176,12 +175,12 @@ class _SkinProfilePageState extends State<SkinProfilePage> {
                                 );
                             }).toList(),
                         ),
-                        const SizedBox(height: 24),
+                        SizedBox(height: AppSpacing.lg),
 
                         const Text('避けたい成分', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                        const SizedBox(height: 8),
+                        SizedBox(height: AppSpacing.sm),
                         Wrap(
-                            spacing: 8,
+                            spacing: AppSpacing.itemSpacing,
                             children: ['アルコール', '香料', 'パラベン', '鉱物油', 'シリコン', 'なし'].map((ingredient) {
                                 return FilterChip(
                                     label: Text(ingredient),
@@ -204,12 +203,12 @@ class _SkinProfilePageState extends State<SkinProfilePage> {
                                 );
                             }).toList(),
                         ),
-                        const SizedBox(height: 24),
+                        SizedBox(height: AppSpacing.lg),
 
                         const Text('求める効果', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                        const SizedBox(height: 8),
+                        SizedBox(height: AppSpacing.sm),
                         Wrap(
-                            spacing: 8,
+                            spacing: AppSpacing.itemSpacing,
                             children: ['保湿', '美白', 'エイジングケア', 'ニキビケア', '毛穴ケア', 'UVケア'].map((effect) {
                                 return FilterChip(
                                     label: Text(effect),
@@ -226,10 +225,10 @@ class _SkinProfilePageState extends State<SkinProfilePage> {
                                 );
                             }).toList(),
                         ),
-                        const SizedBox(height: 24),
+                        SizedBox(height: AppSpacing.lg),
 
                         const Text('特記事項（任意）', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                        const SizedBox(height: 8),
+                        SizedBox(height: AppSpacing.sm),
                         TextField(
                             controller: noteController,
                             maxLines: 3,
@@ -239,14 +238,14 @@ class _SkinProfilePageState extends State<SkinProfilePage> {
                                 border: OutlineInputBorder(),
                             ),
                         ),
-                        const SizedBox(height: 24),
+                        SizedBox(height: AppSpacing.lg),
 
                         SizedBox(
                             width: double.infinity,
                             child: ElevatedButton(
                                 style: ElevatedButton.styleFrom(
-                                    backgroundColor: AppColors.hotPink, // ピンク
-                                    padding: const EdgeInsets.symmetric(vertical: 16),
+                                    backgroundColor: AppColors.hotPink,
+                                    padding: EdgeInsets.symmetric(vertical: AppSpacing.md),
                                 ),
                                 onPressed: () {
                                     // ViewModelに保存
