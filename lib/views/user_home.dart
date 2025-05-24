@@ -14,7 +14,7 @@ class UserHomePage extends StatelessWidget {
     Widget build(BuildContext context) {
         return Scaffold(
             appBar: AppBar(
-                backgroundColor: const Color(0xFFFFB6C1), // ライトピンク
+                backgroundColor: AppColors.lightPink, // ライトピンク
                 title: const Text(
                     'コスメ成分分析',
                     style: TextStyle(
@@ -44,7 +44,7 @@ class UserHomePage extends StatelessWidget {
                                         margin: const EdgeInsets.symmetric(horizontal: 20.0),
                                         padding: const EdgeInsets.all(16.0),
                                         decoration: BoxDecoration(
-                                            color: const Color(0xFFFFF0F5), // ラベンダーブラッシュ
+                                            color: AppColors.lavenderBrush, // ラベンダーブラッシュ
                                             borderRadius: BorderRadius.circular(10.0),
                                         ),
                                         child: const Column(
@@ -55,28 +55,28 @@ class UserHomePage extends StatelessWidget {
                                                     style: TextStyle(
                                                         fontSize: 20,
                                                         fontWeight: FontWeight.bold,
-                                                        color: Color(0xFF666666),
+                                                        color: AppColors.darkSlateGray,
                                                     ),
                                                 ),
                                                 SizedBox(height: 12),
                                                 Text(
                                                     '1. あなたの肌の特徴を教えてね👩',
                                                     style: TextStyle(
-                                                        color: Color(0xFF666666),
+                                                        color: AppColors.darkSlateGray,
                                                         fontSize: 16,
                                                     ),
                                                 ),
                                                 Text(
                                                     '2. お気に入りのコスメを撮影⭐️',
                                                     style: TextStyle(
-                                                        color: Color(0xFF666666),
+                                                        color: AppColors.darkSlateGray,
                                                         fontSize: 16,
                                                     ),
                                                 ),
                                                 Text(
                                                     '3. あなたにへ分析結果をお届け📈',
                                                     style: TextStyle(
-                                                        color: Color(0xFF666666),
+                                                        color: AppColors.darkSlateGray,
                                                         fontSize: 16,
                                                     ),
                                                 ),
@@ -127,7 +127,7 @@ class UserHomePage extends StatelessWidget {
                                                             builder: (context) => Scaffold(
                                                                 appBar: AppBar(
                                                                     title: const Text('バーコードスキャン'),
-                                                                    backgroundColor: const Color(0xFFFFB6C1),
+                                                                    backgroundColor: AppColors.lightPink,
                                                                 ),
                                                                 body: MobileScanner(
                                                                     onDetect: (capture) {
@@ -179,7 +179,7 @@ class UserHomePage extends StatelessWidget {
                                                 label: const Text('撮影する'),
                                                 style: ElevatedButton.styleFrom(
                                                     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                                                    backgroundColor: const Color(0xFFFFB6C1),
+                                                    backgroundColor: AppColors.lightPink,
                                                     foregroundColor: Colors.white,
                                                 ),
                                             ),
@@ -190,7 +190,7 @@ class UserHomePage extends StatelessWidget {
                                                 label: const Text('ギャラリーから選択'),
                                                 style: ElevatedButton.styleFrom(
                                                     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                                                    backgroundColor: const Color(0xFFFFB6C1),
+                                                    backgroundColor: AppColors.lightPink,
                                                     foregroundColor: Colors.white,
                                                 ),
                                             ),

@@ -40,7 +40,7 @@ class LoginPage extends StatelessWidget {
                         width: 120,
                         height: 120,
                         decoration: BoxDecoration(
-                          color: const Color(0xFFFFB6C1),
+                          color: AppColors.lightPink,
                           borderRadius: BorderRadius.circular(60),
                         ),
                         child: const Icon(
@@ -57,7 +57,7 @@ class LoginPage extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 28,
                           fontWeight: FontWeight.bold,
-                          color: Color(0xFFFF69B4),
+                          color: AppColors.hotPink,
                         ),
                       ),
                       const SizedBox(height: 8),
@@ -76,7 +76,7 @@ class LoginPage extends StatelessWidget {
                       // Googleログインボタン
                       if (authViewModel.isLoading)
                         const CircularProgressIndicator(
-                          valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFFFB6C1)),
+                          valueColor: AlwaysStoppedAnimation<Color>(AppColors.lightPink),
                         )
                       else
                         ElevatedButton.icon(

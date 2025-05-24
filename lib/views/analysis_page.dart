@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../viewmodels/picture_viewmodel.dart';
+import '../utils/contents/app_colors.dart';
 
 class AnalysisPage extends StatefulWidget {
     const AnalysisPage({super.key});
@@ -17,7 +18,7 @@ class _AnalysisPageState extends State<AnalysisPage> {
         return Scaffold(
             appBar: AppBar(
                 title: const Text('分析結果'),
-                backgroundColor: const Color(0xFFFFB6C1), // ライトピンク
+                backgroundColor: AppColors.lightPink, // ライトピンク
             ),
             body: Consumer<PictureViewModel>(
                 builder: (context, viewModel, child) {
@@ -64,7 +65,7 @@ class _AnalysisPageState extends State<AnalysisPage> {
                                 const SizedBox(height: 10),
                                 Card(
                                     margin: const EdgeInsets.only(bottom: 10),
-                                    color: const Color(0xFFFFF0F5), // ラベンダーブラッシュ
+                                    color: AppColors.lavenderBrush, // ラベンダーブラッシュ
                                     child: Padding(
                                         padding: const EdgeInsets.all(16),
                                         child: Text(
@@ -138,19 +139,19 @@ class _AnalysisPageState extends State<AnalysisPage> {
 
         switch (rating) {
             case '良好':
-                backgroundColor = const Color(0xFF98FB98); // ペールグリーン
-                textColor = const Color(0xFF2F4F4F); // ダークスレートグレー
+                backgroundColor = AppColors.paleGreen; // ペールグリーン
+                textColor = AppColors.darkSlateGray; // ダークスレートグレー
                 break;
             case 'やや注意':
-                backgroundColor = const Color(0xFFFFB6C1); // ライトピンク
-                textColor = const Color(0xFF2F4F4F); // ダークスレートグレー
+                backgroundColor = AppColors.lightPink; // ライトピンク
+                textColor = AppColors.darkSlateGray; // ダークスレートグレー
                 break;
             case '注意':
-                backgroundColor = const Color(0xFFFF69B4); // ホットピンク
+                backgroundColor = AppColors.hotPink; // ホットピンク
                 break;
             default:
-                backgroundColor = const Color(0xFFD3D3D3); // ライトグレー
-                textColor = const Color(0xFF2F4F4F); // ダークスレートグレー
+                backgroundColor = AppColors.lightGray; // ライトグレー
+                textColor = AppColors.darkSlateGray; // ダークスレートグレー
         }
 
         return Chip(

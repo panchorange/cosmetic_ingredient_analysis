@@ -54,7 +54,7 @@ class _SkinProfilePageState extends State<SkinProfilePage> {
     Widget build(BuildContext context) {
         return Scaffold(
             appBar: AppBar(
-                backgroundColor: const Color(0xFFFFB6C1), // ライトピンク
+                backgroundColor: AppColors.lightPink,
                 title: const Text(
                     '肌プロフィール',
                     style: TextStyle(
@@ -108,9 +108,9 @@ class _SkinProfilePageState extends State<SkinProfilePage> {
                                 DropdownButton<String>(
                                     value: selectedGender,
                                     hint: const Text('選択してください'),
-                                    dropdownColor: const Color(0xFFFFF0F5), // ラベンダーブラッシュ
+                                    dropdownColor: AppColors.lavenderBrush, // ラベンダーブラッシュ
                                     style: const TextStyle(
-                                        color: Color(0xFF666666), // ダークグレー
+                                        color: AppColors.darkSlateGray, // ダークグレー
                                         fontSize: 16,
                                     ),
                                     items: const [
@@ -244,7 +244,7 @@ class _SkinProfilePageState extends State<SkinProfilePage> {
                             width: double.infinity,
                             child: ElevatedButton(
                                 style: ElevatedButton.styleFrom(
-                                    backgroundColor: const Color(0xFFFFC0CB), // ピンク
+                                    backgroundColor: AppColors.hotPink, // ピンク
                                     padding: const EdgeInsets.symmetric(vertical: 16),
                                 ),
                                 onPressed: () {
