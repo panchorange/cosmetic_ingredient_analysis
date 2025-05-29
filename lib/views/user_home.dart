@@ -76,7 +76,7 @@ class UserHomePage extends StatelessWidget {
                                                     ),
                                                 ),
                                                 Text(
-                                                    '3. あなたにへ分析結果をお届け📈',
+                                                    '3. あなたへ分析結果をお届け📈',
                                                     style: TextStyle(
                                                         color: AppColors.darkSlateGray,
                                                         fontSize: 16,
@@ -156,9 +156,27 @@ class UserHomePage extends StatelessWidget {
                                                                                             TextButton(
                                                                                                 onPressed: () async {
                                                                                                     Navigator.pop(context);
-                                                                                                    await pictureViewModel.saveBarcodeToFirebase(barcodeValue);
-                                                                                                    // バーコードスキャン後に直接カメラを起動
-                                                                                                    final XFile? photo = await ImagePicker().pickImage(source: ImageSource.camera);
+                                                                                                    
+                                                                                                    // ローディング表示
+                                                                                                    ScaffoldMessenger.of(context).showSnackBar(
+                                                                                                        const SnackBar(
+                                                                                                            content: Text('カメラを起動中...'),
+                                                                                                            duration: Duration(seconds: 1),
+                                                                                                        ),
+                                                                                                    );
+                                                                                                    
+                                                                                                    // カメラを先に起動（非同期でバーコード保存を実行）
+                                                                                                    final cameraFuture = ImagePicker().pickImage(source: ImageSource.camera);
+                                                                                                    final barcodeSaveFuture = pictureViewModel.saveBarcodeToFirebase(barcodeValue);
+                                                                                                    
+                                                                                                    // カメラの結果を待つ
+                                                                                                    final XFile? photo = await cameraFuture;
+                                                                                                    
+                                                                                                    // バーコード保存が完了するまで待つ（バックグラウンドで実行）
+                                                                                                    barcodeSaveFuture.catchError((error) {
+                                                                                                        print('バーコード保存エラー: $error');
+                                                                                                    });
+                                                                                                    
                                                                                                     if (photo != null) {
                                                                                                         pictureViewModel.processSelectedImage(photo);
                                                                                                     }

@@ -166,13 +166,15 @@ class PictureViewModel extends ChangeNotifier {
                 return;
             }
 
-            final uidRef = FirebaseStorage.instance.ref().child('scanlog').child(uid);
-            final listResult = await uidRef.listAll();
-            String folderName = (listResult.prefixes.length + 1).toString();
+            // 既存のフォルダ名がない場合のみ新しいフォルダを作成
+            if (_currentFolderName == null) {
+                // タイムスタンプベースのフォルダ名を使用してパフォーマンスを向上
+                _currentFolderName = DateTime.now().millisecondsSinceEpoch.toString();
+            }
             
-            final barcodeRef = uidRef.child(folderName).child('barcode_$barcode.txt');
+            final uidRef = FirebaseStorage.instance.ref().child('scanlog').child(uid);
+            final barcodeRef = uidRef.child(_currentFolderName!).child('barcode_$barcode.txt');
             await barcodeRef.putString(barcode);
-            _currentFolderName = folderName;
 
             setBarcodeResult(barcode);
         } catch (e) {
@@ -288,14 +290,13 @@ class PictureViewModel extends ChangeNotifier {
     /// - 分析に失敗した場合
     Future<void> uploadAndAnalyze() async {
         if (_selectedImage == null) return;
-
+        int startTime = DateTime.now().millisecondsSinceEpoch;
         _isLoading = true;
         _resultText = '写真をアップロード中...';
         notifyListeners();
 
         try {
             await _loadProfile();
-
             final uid = FirebaseAuth.instance.currentUser?.uid;
             if (uid == null) {
                 return;

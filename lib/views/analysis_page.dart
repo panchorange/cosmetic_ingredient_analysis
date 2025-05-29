@@ -77,7 +77,7 @@ class _AnalysisPageState extends State<AnalysisPage> {
                                             SizedBox(height: AppSpacing.sm),
 
                                             Text(
-                                                '総合評価: ${analysis["overall_score"] ?? "総合評価(数値)の値がありません" }',
+                                                '総合評価: ${analysis["overall_score"] ?? "総合評価(数値)の値がありません" } / 5',
                                                 style: const TextStyle(
                                                     fontSize: 20,
                                                     fontWeight: FontWeight.bold,
