@@ -21,7 +21,7 @@ class LoginPage extends StatelessWidget {
               );
             });
           }
-          
+
           return Container(
             padding: EdgeInsets.all(AppSpacing.defaultPadding),
             decoration: const BoxDecoration(
@@ -53,7 +53,7 @@ class LoginPage extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 24),
-                      
+
                       // アプリタイトル
                       const Text(
                         'コスメ成分分析',
@@ -64,18 +64,15 @@ class LoginPage extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 8),
-                      
+
                       // アプリ説明
                       const Text(
                         '化粧品の成分を分析して、あなたに合った製品を見つけましょう',
                         textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.grey,
-                        ),
+                        style: TextStyle(fontSize: 16, color: Colors.grey),
                       ),
                       const SizedBox(height: 48),
-                      
+
                       // Googleログインボタン
                       SizedBox(height: AppSpacing.xl),
                       Container(
@@ -100,7 +97,10 @@ class LoginPage extends StatelessWidget {
                                 height: 24,
                               ),
                               label: const Padding(
-                                padding: EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+                                padding: EdgeInsets.symmetric(
+                                  vertical: 12,
+                                  horizontal: 8,
+                                ),
                                 child: Text(
                                   'Googleでログイン',
                                   style: TextStyle(fontSize: 16),
@@ -115,15 +115,19 @@ class LoginPage extends StatelessWidget {
                                 ),
                                 padding: EdgeInsets.symmetric(
                                   horizontal: AppSpacing.lg,
-                                  vertical: AppSpacing.md
+                                  vertical: AppSpacing.md,
                                 ),
                               ),
                               onPressed: () async {
-                                final success = await authViewModel.signInWithGoogle();
+                                final success =
+                                    await authViewModel.signInWithGoogle();
                                 if (!success && context.mounted) {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
-                                      content: Text(authViewModel.errorMessage ?? 'ログインに失敗しました'),
+                                      content: Text(
+                                        authViewModel.errorMessage ??
+                                            'ログインに失敗しました',
+                                      ),
                                       backgroundColor: Colors.red,
                                     ),
                                   );
@@ -141,17 +145,14 @@ class LoginPage extends StatelessWidget {
                           ],
                         ),
                       ),
-                      
+
                       const SizedBox(height: 24),
-                      
+
                       // プライバシーポリシーなど
                       const Text(
                         'ログインすることで、利用規約とプライバシーポリシーに同意したことになります。',
                         textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.grey,
-                        ),
+                        style: TextStyle(fontSize: 12, color: Colors.grey),
                       ),
                     ],
                   ),
@@ -163,4 +164,4 @@ class LoginPage extends StatelessWidget {
       ),
     );
   }
-} 
+}
