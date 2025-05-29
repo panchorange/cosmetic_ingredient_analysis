@@ -1,2 +1,0 @@
-jsonファイルがpushできなかった
-innate-algebra-455208-k8-8abf98653233.json

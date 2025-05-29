@@ -5,7 +5,6 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../models/skin_profile.dart';
 import 'dart:convert';
-import 'package:mobile_scanner/mobile_scanner.dart';
 import 'dart:async';
 import 'skin_profile_viewmodel.dart';
 import 'package:http/http.dart' as http;
@@ -80,78 +79,6 @@ class PictureViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// バーコードをスキャンする
-  ///
-  /// 5秒のタイムアウトが設定されています。
-  ///
-  /// 戻り値:
-  /// - スキャンに成功した場合: バーコードの値
-  /// - スキャンに失敗またはタイムアウトした場合: null
-  Future<String?> _scanBarcode() async {
-    try {
-      final MobileScannerController controller = MobileScannerController();
-      final Completer<String?> completer = Completer<String?>();
-
-      controller.start();
-
-      controller.barcodes.listen((capture) {
-        final List<Barcode> barcodes = capture.barcodes;
-        if (barcodes.isNotEmpty) {
-          final barcode = barcodes.first.rawValue;
-          controller.stop();
-          completer.complete(barcode);
-        }
-      });
-
-      return await completer.future.timeout(
-        const Duration(seconds: 5),
-        onTimeout: () {
-          controller.stop();
-          return null;
-        },
-      );
-    } catch (e) {
-      return null;
-    }
-  }
-
-  /// 最新のフォルダ番号を取得
-  ///
-  /// Firebaseストレージ内の最新のフォルダ番号を取得します。
-  ///
-  /// 戻り値:
-  /// - 成功時: 最新のフォルダ番号
-  /// - 失敗時: 0
-  Future<int> _getLatestFolderNumber() async {
-    try {
-      final storageRef = FirebaseStorage.instance.ref();
-      final scanlogRef = storageRef.child('scanlog');
-      final result = await scanlogRef.listAll();
-
-      int maxNumber = 0;
-      for (var folder in result.prefixes) {
-        final folderName = folder.name;
-        final number = int.tryParse(folderName);
-        if (number != null && number > maxNumber) {
-          maxNumber = number;
-        }
-      }
-
-      return maxNumber;
-    } catch (e) {
-      return 0;
-    }
-  }
-
-  /// 新しいフォルダを作成
-  ///
-  /// 戻り値: 作成されたフォルダ名
-  Future<String> _createNewFolder() async {
-    int latestNumber = await _getLatestFolderNumber();
-    _currentFolderName = (latestNumber + 1).toString();
-    return _currentFolderName!;
-  }
-
   /// バーコードデータをFirebaseに保存
   ///
   /// [barcode] 保存するバーコードの値
@@ -167,10 +94,7 @@ class PictureViewModel extends ChangeNotifier {
       }
 
       // 既存のフォルダ名がない場合のみ新しいフォルダを作成
-      if (_currentFolderName == null) {
-        // タイムスタンプベースのフォルダ名を使用してパフォーマンスを向上
-        _currentFolderName = DateTime.now().millisecondsSinceEpoch.toString();
-      }
+      _currentFolderName ??= DateTime.now().millisecondsSinceEpoch.toString();
 
       final uidRef = FirebaseStorage.instance.ref().child('scanlog').child(uid);
       final barcodeRef = uidRef
@@ -304,7 +228,6 @@ class PictureViewModel extends ChangeNotifier {
   /// - 分析に失敗した場合
   Future<void> uploadAndAnalyze() async {
     if (_selectedImage == null) return;
-    int startTime = DateTime.now().millisecondsSinceEpoch;
     _isLoading = true;
     _resultText = '写真をアップロード中...';
     notifyListeners();

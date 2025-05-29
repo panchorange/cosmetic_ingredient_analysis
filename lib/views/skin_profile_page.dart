@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../viewmodels/skin_profile_viewmodel.dart';
-import '../viewmodels/picture_viewmodel.dart';
 import '../utils/contents/app_colors.dart';
 import '../utils/contents/app_spacing.dart';
-import 'dart:io';
 
 class SkinProfilePage extends StatefulWidget {
   const SkinProfilePage({super.key});
@@ -22,7 +20,6 @@ class _SkinProfilePageState extends State<SkinProfilePage> {
   final Set<String> selectedAvoidIngredients = {'香料', 'なし'};
   final Set<String> selectedEffects = {'保湿', 'エイジングケア'};
   final TextEditingController noteController = TextEditingController();
-  File? _selectedImage;
 
   @override
   void initState() {

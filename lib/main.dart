@@ -14,11 +14,11 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   try {
     await Firebase.initializeApp();
-    print('Firebase initialized successfully');
+    debugPrint('Firebase initialized successfully');
   } catch (e, stackTrace) {
-    print('Failed to initialize Firebase:');
-    print('Error: $e');
-    print('Stack trace: $stackTrace');
+    debugPrint('Failed to initialize Firebase:');
+    debugPrint('Error: $e');
+    debugPrint('Stack trace: $stackTrace');
   }
   runApp(const CosmeAnalyzer());
 }
@@ -49,7 +49,6 @@ class CosmeAnalyzer extends StatelessWidget {
             seedColor: const Color(0xFFFFB6C1),
             primary: const Color(0xFFFFB6C1),
             secondary: const Color(0xFFFF69B4),
-            background: Colors.white,
             surface: const Color(0xFFFFF0F5),
           ),
           scaffoldBackgroundColor: Colors.white,
