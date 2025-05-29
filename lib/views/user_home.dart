@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'dart:io';
 import 'package:provider/provider.dart';
 import '../viewmodels/picture_viewmodel.dart';
 import '../viewmodels/skin_profile_viewmodel.dart';
 import '../utils/contents/app_colors.dart';
 import '../utils/contents/app_spacing.dart';
-import 'analysis_page.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -34,7 +32,7 @@ class UserHomePage extends StatelessWidget {
           if (skinProfileViewModel.profile != null &&
               pictureViewModel.currentProfile == null) {
             pictureViewModel.setProfile(skinProfileViewModel.profile!);
-            print('プロフィール情報をPictureViewModelに設定しました');
+            debugPrint('プロフィール情報をPictureViewModelに設定しました');
           }
 
           return SingleChildScrollView(
@@ -203,7 +201,7 @@ class UserHomePage extends StatelessWidget {
                                                       // バーコード保存が完了するまで待つ（バックグラウンドで実行）
                                                       barcodeSaveFuture
                                                           .catchError((error) {
-                                                            print(
+                                                            debugPrint(
                                                               'バーコード保存エラー: $error',
                                                             );
                                                           });
