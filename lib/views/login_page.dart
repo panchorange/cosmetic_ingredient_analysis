@@ -91,10 +91,10 @@ class LoginPage extends StatelessWidget {
                             if (authViewModel.isLoading)
                               const SizedBox(height: 24),
                             ElevatedButton.icon(
-                              icon: Image.network(
-                                'https://cdn1.iconfinder.com/data/icons/google-s-logo/150/Google_Icons-09-512.png',
-                                width: 24,
-                                height: 24,
+                              icon: const Icon(
+                                Icons.login,
+                                color: Colors.red,
+                                size: 24,
                               ),
                               label: const Padding(
                                 padding: EdgeInsets.symmetric(
@@ -144,15 +144,6 @@ class LoginPage extends StatelessWidget {
                               ),
                           ],
                         ),
-                      ),
-
-                      const SizedBox(height: 24),
-
-                      // プライバシーポリシーなど
-                      const Text(
-                        'ログインすることで、利用規約とプライバシーポリシーに同意したことになります。',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: 12, color: Colors.grey),
                       ),
                     ],
                   ),

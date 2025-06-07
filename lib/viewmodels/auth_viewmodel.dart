@@ -11,7 +11,10 @@ import 'package:google_sign_in/google_sign_in.dart';
 /// - ユーザー情報の取得
 class AuthViewModel extends ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final GoogleSignIn _googleSignIn = GoogleSignIn();
+  final GoogleSignIn _googleSignIn = GoogleSignIn(
+    clientId:
+        '1037062375017-btu6k11c01sk7gdee7g571lp6u7ik9pj.apps.googleusercontent.com',
+  );
 
   User? _currentUser;
   bool _isLoading = false;

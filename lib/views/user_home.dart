@@ -4,11 +4,23 @@ import '../viewmodels/picture_viewmodel.dart';
 import '../viewmodels/skin_profile_viewmodel.dart';
 import '../utils/contents/app_colors.dart';
 import '../utils/contents/app_spacing.dart';
-import 'package:mobile_scanner/mobile_scanner.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:flutter/foundation.dart';
 
-class UserHomePage extends StatelessWidget {
+class UserHomePage extends StatefulWidget {
   const UserHomePage({super.key});
+
+  @override
+  State<UserHomePage> createState() => _UserHomePageState();
+}
+
+class _UserHomePageState extends State<UserHomePage> {
+  final TextEditingController _barcodeController = TextEditingController();
+
+  @override
+  void dispose() {
+    _barcodeController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -70,7 +82,7 @@ class UserHomePage extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          '2. お気に入りのコスメを撮影⭐️',
+                          '2. お気に入りのコスメ画像をアップロード⭐️',
                           style: TextStyle(
                             color: AppColors.darkSlateGray,
                             fontSize: 16,
@@ -88,7 +100,9 @@ class UserHomePage extends StatelessWidget {
                   ),
                   SizedBox(height: AppSpacing.md),
 
-                  if (pictureViewModel.selectedImage != null)
+                  // 画像表示部分 - WebとMobileの両方に対応
+                  if ((kIsWeb && pictureViewModel.selectedImageBytes != null) ||
+                      (!kIsWeb && pictureViewModel.selectedImage != null))
                     Container(
                       width: 250,
                       height: 250,
@@ -98,10 +112,26 @@ class UserHomePage extends StatelessWidget {
                       ),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(AppSpacing.sm),
-                        child: Image.file(
-                          pictureViewModel.selectedImage!,
-                          fit: BoxFit.cover,
-                        ),
+                        child:
+                            kIsWeb
+                                ? Image.memory(
+                                  pictureViewModel.selectedImageBytes!,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return const Center(
+                                      child: Text('画像の読み込みに失敗しました'),
+                                    );
+                                  },
+                                )
+                                : Image.file(
+                                  pictureViewModel.selectedImage!,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return const Center(
+                                      child: Text('画像の読み込みに失敗しました'),
+                                    );
+                                  },
+                                ),
                       ),
                     )
                   else
@@ -117,147 +147,104 @@ class UserHomePage extends StatelessWidget {
 
                   SizedBox(height: AppSpacing.md),
 
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      ElevatedButton.icon(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder:
-                                  (context) => Scaffold(
-                                    appBar: AppBar(
-                                      title: const Text('バーコードスキャン'),
-                                      backgroundColor: AppColors.lightPink,
-                                    ),
-                                    body: MobileScanner(
-                                      onDetect: (capture) {
-                                        final List<Barcode> barcodes =
-                                            capture.barcodes;
-                                        for (final barcode in barcodes) {
-                                          final String barcodeValue =
-                                              barcode.rawValue ?? '';
-                                          Navigator.pop(context);
-
-                                          // バーコード結果をポップアップで表示
-                                          showDialog(
-                                            context: context,
-                                            builder: (BuildContext context) {
-                                              return AlertDialog(
-                                                title: const Text(
-                                                  'バーコードスキャン完了',
-                                                ),
-                                                content: Column(
-                                                  mainAxisSize:
-                                                      MainAxisSize.min,
-                                                  children: [
-                                                    Text(
-                                                      'バーコード: $barcodeValue',
-                                                    ),
-                                                    const SizedBox(height: 16),
-                                                    const Text(
-                                                      '次に成分表を撮影してください',
-                                                    ),
-                                                  ],
-                                                ),
-                                                actions: [
-                                                  TextButton(
-                                                    onPressed: () async {
-                                                      Navigator.pop(context);
-
-                                                      // ローディング表示
-                                                      ScaffoldMessenger.of(
-                                                        context,
-                                                      ).showSnackBar(
-                                                        const SnackBar(
-                                                          content: Text(
-                                                            'カメラを起動中...',
-                                                          ),
-                                                          duration: Duration(
-                                                            seconds: 1,
-                                                          ),
-                                                        ),
-                                                      );
-
-                                                      // カメラを先に起動（非同期でバーコード保存を実行）
-                                                      final cameraFuture =
-                                                          ImagePicker()
-                                                              .pickImage(
-                                                                source:
-                                                                    ImageSource
-                                                                        .camera,
-                                                              );
-                                                      final barcodeSaveFuture =
-                                                          pictureViewModel
-                                                              .saveBarcodeToFirebase(
-                                                                barcodeValue,
-                                                              );
-
-                                                      // カメラの結果を待つ
-                                                      final XFile? photo =
-                                                          await cameraFuture;
-
-                                                      // バーコード保存が完了するまで待つ（バックグラウンドで実行）
-                                                      barcodeSaveFuture
-                                                          .catchError((error) {
-                                                            debugPrint(
-                                                              'バーコード保存エラー: $error',
-                                                            );
-                                                          });
-
-                                                      if (photo != null) {
-                                                        pictureViewModel
-                                                            .processSelectedImage(
-                                                              photo,
-                                                            );
-                                                      }
-                                                    },
-                                                    child: const Text('成分表を撮影'),
-                                                  ),
-                                                ],
-                                              );
-                                            },
-                                          );
-                                          break;
-                                        }
-                                      },
-                                    ),
-                                  ),
-                            ),
-                          );
-                        },
-                        icon: const Icon(Icons.camera_alt_outlined),
-                        label: const Text('撮影する'),
-                        style: ElevatedButton.styleFrom(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: AppSpacing.md,
-                            vertical: AppSpacing.sm,
-                          ),
-                          backgroundColor: AppColors.lightPink,
-                          foregroundColor: Colors.white,
-                        ),
+                  // ファイル選択ボタン
+                  ElevatedButton.icon(
+                    onPressed: pictureViewModel.pickFromGallery,
+                    icon: const Icon(Icons.upload_file),
+                    label: const Text('ファイルを選択'),
+                    style: ElevatedButton.styleFrom(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: AppSpacing.lg,
+                        vertical: AppSpacing.md,
                       ),
-                      SizedBox(width: AppSpacing.md),
-                      ElevatedButton.icon(
-                        onPressed: pictureViewModel.pickFromGallery,
-                        icon: const Icon(Icons.photo_library_outlined),
-                        label: const Text('ギャラリーから選択'),
-                        style: ElevatedButton.styleFrom(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: AppSpacing.md,
-                            vertical: AppSpacing.sm,
-                          ),
-                          backgroundColor: AppColors.lightPink,
-                          foregroundColor: Colors.white,
-                        ),
-                      ),
-                    ],
+                      backgroundColor: AppColors.lightPink,
+                      foregroundColor: Colors.white,
+                    ),
                   ),
 
                   SizedBox(height: AppSpacing.md),
 
-                  if (pictureViewModel.selectedImage != null)
+                  // バーコード手動入力フィールド
+                  Container(
+                    width: double.infinity,
+                    margin: EdgeInsets.symmetric(
+                      horizontal: AppSpacing.contentMargin,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'バーコード（任意入力）',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.darkSlateGray,
+                          ),
+                        ),
+                        SizedBox(height: AppSpacing.sm),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: TextField(
+                                controller: _barcodeController,
+                                decoration: const InputDecoration(
+                                  hintText: 'バーコードを入力（例: 4987241188833）',
+                                  border: OutlineInputBorder(),
+                                  contentPadding: EdgeInsets.symmetric(
+                                    horizontal: 12,
+                                    vertical: 12,
+                                  ),
+                                ),
+                                keyboardType: TextInputType.number,
+                              ),
+                            ),
+                            SizedBox(width: AppSpacing.sm),
+                            ElevatedButton(
+                              onPressed: () async {
+                                await pictureViewModel.setManualBarcode(
+                                  _barcodeController.text,
+                                );
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: AppColors.lightPink,
+                                foregroundColor: Colors.white,
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                  vertical: 12,
+                                ),
+                              ),
+                              child: const Text('設定'),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  // バーコード結果表示
+                  if (pictureViewModel.barcodeResult != null)
+                    Container(
+                      width: double.infinity,
+                      margin: EdgeInsets.symmetric(
+                        horizontal: AppSpacing.contentMargin,
+                      ).copyWith(top: AppSpacing.md),
+                      padding: EdgeInsets.all(AppSpacing.md),
+                      decoration: BoxDecoration(
+                        color: AppColors.lavenderBrush,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Text(
+                        '✅ バーコード: ${pictureViewModel.barcodeResult}',
+                        style: const TextStyle(
+                          color: AppColors.darkSlateGray,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+
+                  // アップロードボタン（撮影完了後に表示）
+                  if ((kIsWeb && pictureViewModel.selectedImageBytes != null) ||
+                      (!kIsWeb && pictureViewModel.selectedImage != null))
                     ElevatedButton.icon(
                       onPressed:
                           pictureViewModel.isLoading
@@ -270,12 +257,10 @@ class UserHomePage extends StatelessWidget {
                           horizontal: AppSpacing.lg,
                           vertical: AppSpacing.md,
                         ),
-                        backgroundColor: const Color(0xFFFF69B4), // ホットピンク
+                        backgroundColor: const Color(0xFFFF69B4),
                         foregroundColor: Colors.white,
                       ),
                     ),
-
-                  SizedBox(height: AppSpacing.md),
 
                   if (pictureViewModel.isLoading)
                     Column(
@@ -294,11 +279,52 @@ class UserHomePage extends StatelessWidget {
                       ),
                       padding: EdgeInsets.all(AppSpacing.defaultPadding),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFFFF0F5), // ラベンダーブラッシュ
+                        color:
+                            pictureViewModel.resultText.contains('エラー') ||
+                                    pictureViewModel.resultText.contains('失敗')
+                                ? const Color(0xFFFFEBEE) // エラーの場合は薄い赤背景
+                                : const Color(0xFFFFF0F5), // 成功の場合は薄いピンク背景
                         borderRadius: BorderRadius.circular(10.0),
+                        border:
+                            pictureViewModel.resultText.contains('エラー') ||
+                                    pictureViewModel.resultText.contains('失敗')
+                                ? Border.all(
+                                  color: const Color(0xFFE57373),
+                                  width: 1.0,
+                                )
+                                : null,
                       ),
-                      child: Text(pictureViewModel.resultText),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          if (pictureViewModel.resultText.contains('エラー') ||
+                              pictureViewModel.resultText.contains('失敗'))
+                            const Icon(
+                              Icons.error_outline,
+                              color: Color(0xFFD32F2F),
+                              size: 20,
+                            )
+                          else
+                            const Icon(
+                              Icons.check_circle_outline,
+                              color: Color(0xFF388E3C),
+                              size: 20,
+                            ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              pictureViewModel.resultText,
+                              style: const TextStyle(
+                                color: AppColors.darkSlateGray,
+                                fontSize: 14,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
+
+                  SizedBox(height: AppSpacing.md),
                 ],
               ),
             ),

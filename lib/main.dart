@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
+import 'firebase_options.dart';
 import 'viewmodels/picture_viewmodel.dart';
 import 'viewmodels/skin_profile_viewmodel.dart';
 import 'viewmodels/auth_viewmodel.dart';
@@ -13,7 +14,9 @@ import 'views/login_page.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   try {
-    await Firebase.initializeApp();
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
     debugPrint('Firebase initialized successfully');
   } catch (e, stackTrace) {
     debugPrint('Failed to initialize Firebase:');
