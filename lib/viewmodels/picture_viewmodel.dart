@@ -87,12 +87,12 @@ class PictureViewModel extends ChangeNotifier {
 
   /// 手動でバーコードを設定し、Firebaseに保存
   ///
-  /// [barcode] 手動で入力されたバーコード値（空文字またはnullの場合は"500"）
+  /// [barcode] 手動で入力されたバーコード値（空文字またはnullの場合は"99"）
   Future<void> setManualBarcode(String? barcode) async {
     try {
-      // 入力がない場合は"500"を使用
+      // 入力がない場合は"99"を使用
       final barcodeValue =
-          (barcode == null || barcode.trim().isEmpty) ? "500" : barcode.trim();
+          (barcode == null || barcode.trim().isEmpty) ? "99" : barcode.trim();
 
       debugPrint('手動バーコード設定: $barcodeValue');
       setBarcodeResult(barcodeValue);
@@ -368,7 +368,7 @@ class PictureViewModel extends ChangeNotifier {
 
       final requestBody = {
         'firebaseFolderPath': 'scanlog/$uid/$_currentFolderName',
-        'barcode': _barcodeResult,
+        'barcode': _barcodeResult ?? '500', // バーコードが設定されていない場合は'500'を送信
         'userProfileJson': userProfileJson,
       };
 
@@ -377,6 +377,10 @@ class PictureViewModel extends ChangeNotifier {
         'URL: https://asia-northeast1-cosmetic-ingredient-analysis.cloudfunctions.net/analyzeIngredients',
       );
       debugPrint('リクエストボディ: ${json.encode(requestBody)}');
+      debugPrint('送信パラメータ:');
+      debugPrint('  - firebaseFolderPath: ${requestBody['firebaseFolderPath']}');
+      debugPrint('  - barcode: ${requestBody['barcode']} (${_barcodeResult == null ? 'デフォルト値' : 'スキャン値'})');
+      debugPrint('  - userProfileJson keys: ${userProfileJson.keys.toList()}');
 
       final response = await http.post(
         Uri.parse(
@@ -403,12 +407,17 @@ class PictureViewModel extends ChangeNotifier {
         String errorMessage = 'サーバーエラーが発生しました';
         try {
           final errorData = json.decode(response.body);
+          debugPrint('パースされたエラーデータ: $errorData');
+          
           if (errorData['error'] != null) {
             errorMessage = errorData['error'];
           }
           if (errorData['message'] != null &&
               errorData['message'].toString().isNotEmpty) {
             errorMessage += ': ${errorData['message']}';
+          }
+          if (errorData['details'] != null) {
+            errorMessage += ' (詳細: ${errorData['details']})';
           }
         } catch (parseError) {
           debugPrint('エラーレスポンスの解析に失敗: $parseError');

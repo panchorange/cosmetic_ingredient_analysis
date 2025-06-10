@@ -1,0 +1,39 @@
+# ビルド成果物
+build/
+.dart_tool/
+
+# IDE関連
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS関連
+.DS_Store
+Thumbs.db
+
+# Git
+.git/
+.gitignore
+
+# ログファイル
+*.log
+
+# テストファイル
+test/
+*_test.dart
+
+# プラットフォーム固有のフォルダ（Web以外）
+android/
+ios/
+linux/
+macos/
+windows/
+
+# その他の不要ファイル
+README.md
+.metadata
+analysis_options.yaml
+.flutter-plugins*
+.packages 

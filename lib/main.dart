@@ -70,7 +70,7 @@ class CosmeAnalyzer extends StatelessWidget {
               ),
             ),
           ),
-          cardTheme: CardTheme(
+          cardTheme: CardThemeData(
             color: const Color(0xFFFFF0F5),
             elevation: 2,
             shape: RoundedRectangleBorder(

@@ -1,16 +1,23 @@
-# cosmetic_ingredient_analysis
+# 化粧品成分分析AIエージェント
 
-A new Flutter project.
 
-## Getting Started
+## 開発者用メモ
 
-This project is a starting point for a Flutter application.
+### webアプリのリリース
+docer containerをcloud runで動かす。
+手順
+1. local:Dockerfileのbuild+push
+    *  linux/amd64 でbuildする。
+```
+docker buildx build --platform linux/amd64 -t myapp --push .
+```
+2. local: tag付け
+```
+docker tag cosme-analyze:0.1 asia-northeast1-docker.pkg.dev/cosmetic-ingredient-analysis/cosme-analyze-web/cosme-analyze:0.1
+```
+3. gcp:artifact registoryへpush
 
-A few resources to get you started if this is your first Flutter project:
+```
+docker push asia-northeast1-docker.pkg.dev/cosmetic-ingredient-analysis/cosme-analyze-web/cosme-analyze:0.1
+```
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
