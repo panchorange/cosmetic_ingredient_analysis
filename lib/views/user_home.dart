@@ -149,7 +149,20 @@ class _UserHomePageState extends State<UserHomePage> {
 
                   // ファイル選択ボタン
                   ElevatedButton.icon(
-                    onPressed: pictureViewModel.pickFromGallery,
+                    onPressed: () {
+                      // プロフィールが入力されているかチェック
+                      if (skinProfileViewModel.profile == null) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('プロフィールを入力してね'),
+                            backgroundColor: Colors.redAccent,
+                            duration: Duration(seconds: 3),
+                          ),
+                        );
+                        return;
+                      }
+                      pictureViewModel.pickFromGallery();
+                    },
                     icon: const Icon(Icons.upload_file),
                     label: const Text('ファイルを選択'),
                     style: ElevatedButton.styleFrom(
