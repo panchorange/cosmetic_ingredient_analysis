@@ -91,12 +91,19 @@ flutter build appbundle --release
 
 ### Androidでのflutter run
 
-1. **デバイスの準備**
+1. **前提条件**
+   - android/app/google-services.json が必要になります。
+     開発者から受け取って正しい場所に配置してください。
+   - Flutter SDK (3.7.2以上)
+   - Android Studio または VS Code
+   - Firebase CLI （オプション）
+
+2. **デバイスの準備**
    - 開発者オプションを有効化
    - USBデバッグを有効化
    - デバイスをUSBで接続
 
-2. **実行**
+3. **実行**
 ```bash
 # デバイス確認
 flutter devices
