@@ -45,6 +45,12 @@ flutter run -d chrome
 ```
 
 ## Androidアプリの使い方
+Android StudioへUSBケーブルを使ってスマホ接続をした上での動作を想定しております。
+* [PC]Android Studioのインストール
+   * https://developer.android.com/studio/install?hl=ja
+* [Androidスマホ]開発者ツールの設定
+   * https://developer.android.com/studio/debug/dev-options?hl=ja
+を行った上で、以下を実施してください。
 
 ### Windowsでのビルド
 
